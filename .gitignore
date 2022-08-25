@@ -1,2 +1,5 @@
 .vscode
 .venv
+bin
+
+.pyinstaller
