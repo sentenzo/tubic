@@ -13,16 +13,28 @@ else
    endif
 endif
 
-ENTRY_POINT = ./src/app.py
+# APP_FILE = app
+APP_FILE = app_gui
+
+APP_NAME = yt-dpl-qt6
+
+ENTRY_POINT = ./src/$(APP_FILE).py
+
+all:
 
 pyui:
-	pyuic6 -o ./src/qt/py_ui/main_window.py -x ./src/qt/ui/main_window.ui
+	pyuic6 -o ./src/qt/py_ui/main_window.py \
+	       -x ./src/qt/ui/main_window.ui
 
 build:
-	pyinstaller --workpath ./.pyinstaller/build --distpath ./bin --specpath ./.pyinstaller  --onefile $(ENTRY_POINT)
+	pyinstaller --workpath ./.pyinstaller/build \
+	            --distpath ./bin --specpath ./.pyinstaller \
+				--noconsole --onefile \
+				--name $(APP_NAME) \
+				$(ENTRY_POINT)
 
 run:
-	./bin/app
+	./bin/$(APP_NAME)
 
 runpy:
 	$(PYTHON) $(ENTRY_POINT)
