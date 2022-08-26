@@ -1,3 +1,5 @@
+__pycache__
+
 .vscode
 .venv
 .venv_linux
@@ -5,3 +7,9 @@
 bin
 
 .pyinstaller
+
+# download formates 
+*.mp4
+*.mp3
+*.ogg
+*.flv

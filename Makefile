@@ -13,14 +13,16 @@ else
    endif
 endif
 
+ENTRY_POINT = ./src/app.py
+
 build:
-	pyinstaller --workpath ./.pyinstaller/build --distpath ./bin --specpath ./.pyinstaller  --onefile ./app.py
+	pyinstaller --workpath ./.pyinstaller/build --distpath ./bin --specpath ./.pyinstaller  --onefile $(ENTRY_POINT)
 
 run:
-	./bin/app./
+	./bin/app
 
 runpy:
-	$(PYTHON) app.py
+	$(PYTHON) $(ENTRY_POINT)
 
 clean:
 	$(RM) $(call FixPath,./bin/*)
