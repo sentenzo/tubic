@@ -15,6 +15,9 @@ endif
 
 ENTRY_POINT = ./src/app.py
 
+pyui:
+	pyuic6 -o ./src/qt/py_ui/main_window.py -x ./src/qt/ui/main_window.ui
+
 build:
 	pyinstaller --workpath ./.pyinstaller/build --distpath ./bin --specpath ./.pyinstaller  --onefile $(ENTRY_POINT)
 

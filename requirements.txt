@@ -13,6 +13,9 @@ platformdirs==2.5.2
 pycryptodomex==3.15.0
 pyinstaller==5.3
 pyinstaller-hooks-contrib==2022.8
+PyQt6==6.3.1
+PyQt6-Qt6==6.3.1
+PyQt6-sip==13.4.0
 pywin32-ctypes==0.2.0
 tomli==2.0.1
 websockets==10.3
