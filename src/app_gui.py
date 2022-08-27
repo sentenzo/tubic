@@ -13,9 +13,9 @@ ui.setupUi(window)
 
 
 def do__download_all():
-    te_youtube_links = window.findChild(qtw.QTextEdit, "te_youtube_links")
-    youtube_links = te_youtube_links.toPlainText().split()
-    download_videos(youtube_links)
+    le_youtube_link = window.findChild(qtw.QLineEdit, "le_youtube_link")
+    youtube_link = le_youtube_link.text()
+    download_videos([youtube_link])
 
 
 window.findChild(qtw.QPushButton, "pb_download_all").clicked.connect(do__download_all)

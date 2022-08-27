@@ -36,7 +36,7 @@ build:
 run:
 	./bin/$(APP_NAME)
 
-runpy:
+runpy: pyui
 	$(PYTHON) $(ENTRY_POINT)
 
 clean:
