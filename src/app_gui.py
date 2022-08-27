@@ -1,7 +1,6 @@
 import sys
 import re
 import PyQt6.QtWidgets as qtw
-import pyperclip
 
 from qt.py_ui.main_window import Ui_MainWindow
 from ytdpl_wrapper import download_videos
@@ -21,7 +20,7 @@ class YtMainWindow(qtw.QMainWindow):
         if not le_youtube_link:
             return
 
-        youtube_link: str = pyperclip.paste()
+        youtube_link: str = qtw.QApplication.clipboard().text()
         # https://www.youtube.com/watch?v=cmb6pTj67Nk
         re_template = r"https\://www\.youtube\.com/watch\?v=[\w\d-]+"
         if not re.match(re_template, youtube_link):
