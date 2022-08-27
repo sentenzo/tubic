@@ -26,7 +26,7 @@ pyui:
 	pyuic6 -o ./src/qt/py_ui/main_window.py \
 	       -x ./src/qt/ui/main_window.ui
 
-build:
+build: pyui
 	pyinstaller --workpath ./.pyinstaller/build \
 	            --distpath ./bin --specpath ./.pyinstaller \
 				--noconsole --onefile \
