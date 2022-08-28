@@ -29,9 +29,9 @@ pyui:
 build: pyui
 	pyinstaller --workpath ./.pyinstaller/build \
 	            --distpath ./bin --specpath ./.pyinstaller \
-				--noconsole --onefile \
-				--name $(APP_NAME) \
-				$(ENTRY_POINT)
+	            --noconsole --onefile \
+	            --name $(APP_NAME) \
+	            $(ENTRY_POINT)
 
 run:
 	./bin/$(APP_NAME)
