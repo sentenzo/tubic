@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>345</width>
-    <height>69</height>
+    <height>86</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,24 +36,42 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetDefaultConstraint</enum>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="pb_download_all">
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
       </property>
-      <item>
-       <widget class="QPushButton" name="pb_download_all">
-        <property name="text">
-         <string>Download video</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+      <property name="text">
+       <string>Download video</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="le_youtube_link">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="readOnly">
+       <bool>false</bool>
+      </property>
+      <property name="placeholderText">
+       <string>https://www.youtube.com/watch?v=...</string>
+      </property>
+     </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QLineEdit" name="le_youtube_link">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>https://www.youtube.com/watch?v=cmb6pTj67Nk</string>
+       <string>Copy-paste the youtube link:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>

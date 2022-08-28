@@ -9,39 +9,43 @@ from ytdpl_wrapper import download_videos
 class YtMainWindow(qtw.QMainWindow):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        ui = Ui_MainWindow()
-        ui.setupUi(self)
+        Ui_MainWindow().setupUi(self)
         self.setFocus()
+        self.setFixedSize(self.size())
 
-    def focusInEvent(self, event):
-        le_youtube_link: qtw.QLineEdit = window.findChild(
+        self.le_youtube_link: qtw.QLineEdit = self.findChild(
             qtw.QLineEdit, "le_youtube_link"
         )
-        if not le_youtube_link:
-            return
+        pb_download_all: qtw.QPushButton = self.findChild(
+            qtw.QPushButton, "pb_download_all"
+        )
 
+        def do_download_all():
+            youtube_link = self.le_youtube_link.text()
+            download_videos([youtube_link])
+
+        pb_download_all.clicked.connect(do_download_all)
+
+    def focusInEvent(self, event) -> None:
         youtube_link: str = qtw.QApplication.clipboard().text()
-        # https://www.youtube.com/watch?v=cmb6pTj67Nk
-        re_template = r"https\://www\.youtube\.com/watch\?v=[\w\d-]+"
-        if not re.match(re_template, youtube_link):
-            return
 
-        le_youtube_link.setText(youtube_link)
-
-
-app = qtw.QApplication(sys.argv)
-window = YtMainWindow()
-
-
-def do__download_all():
-    le_youtube_link = window.findChild(qtw.QLineEdit, "le_youtube_link")
-    youtube_link = le_youtube_link.text()
-    download_videos([youtube_link])
-
-
-window.findChild(qtw.QPushButton, "pb_download_all").clicked.connect(do__download_all)
+        re_templates = [
+            # https://www.youtube.com/watch?v=cmb6pTj67Nk&___any_other_stuff
+            r"https\://www\.youtube\.com/watch\?v=([\w\d-]+).*",
+            # https://www.youtube.com/embed/cmb6pTj67Nk?
+            r"https\://www\.youtube\.com/embed/([\w\d-]+).*",
+            # https://youtu.be/cmb6pTj67Nk
+            r"https\://youtu\.be/([\w\d-]+).*",
+        ]
+        for re_temp in re_templates:
+            match = re.match(re_temp, youtube_link)
+            if match and match.groups():
+                video_code = match.groups()[0]
+                self.le_youtube_link.setText(f"https://youtu.be/{video_code}")
+                return
 
 if __name__ == "__main__":
-
+    app = qtw.QApplication(sys.argv)
+    window = YtMainWindow()
     window.show()
     app.exec()
