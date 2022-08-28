@@ -13,7 +13,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowModality(QtCore.Qt.WindowModality.NonModal)
-        MainWindow.resize(345, 86)
+        MainWindow.resize(345, 88)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -27,10 +27,6 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.pb_download_all = QtWidgets.QPushButton(self.centralwidget)
-        self.pb_download_all.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
-        self.pb_download_all.setObjectName("pb_download_all")
-        self.gridLayout.addWidget(self.pb_download_all, 2, 0, 1, 1)
         self.le_youtube_link = QtWidgets.QLineEdit(self.centralwidget)
         self.le_youtube_link.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.le_youtube_link.setText("")
@@ -38,6 +34,17 @@ class Ui_MainWindow(object):
         self.le_youtube_link.setReadOnly(False)
         self.le_youtube_link.setObjectName("le_youtube_link")
         self.gridLayout.addWidget(self.le_youtube_link, 1, 0, 1, 1)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.pb_download_video = QtWidgets.QPushButton(self.centralwidget)
+        self.pb_download_video.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        self.pb_download_video.setObjectName("pb_download_video")
+        self.horizontalLayout.addWidget(self.pb_download_video)
+        self.pb_download_audio = QtWidgets.QPushButton(self.centralwidget)
+        self.pb_download_audio.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        self.pb_download_audio.setObjectName("pb_download_audio")
+        self.horizontalLayout.addWidget(self.pb_download_audio)
+        self.gridLayout.addLayout(self.horizontalLayout, 3, 0, 1, 1)
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label.setObjectName("label")
@@ -50,8 +57,9 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "yt-dpl-qt6"))
-        self.pb_download_all.setText(_translate("MainWindow", "Download video"))
         self.le_youtube_link.setPlaceholderText(_translate("MainWindow", "https://www.youtube.com/watch?v=..."))
+        self.pb_download_video.setText(_translate("MainWindow", "Download video"))
+        self.pb_download_audio.setText(_translate("MainWindow", "Download audio"))
         self.label.setText(_translate("MainWindow", "Copy-paste the youtube link:"))
 
 

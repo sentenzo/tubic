@@ -16,15 +16,23 @@ class YtMainWindow(qtw.QMainWindow):
         self.le_youtube_link: qtw.QLineEdit = self.findChild(
             qtw.QLineEdit, "le_youtube_link"
         )
-        pb_download_all: qtw.QPushButton = self.findChild(
-            qtw.QPushButton, "pb_download_all"
+        pb_download_video: qtw.QPushButton = self.findChild(
+            qtw.QPushButton, "pb_download_video"
+        )
+        pb_download_audio: qtw.QPushButton = self.findChild(
+            qtw.QPushButton, "pb_download_audio"
         )
 
-        def do_download_all():
+        def do_download_video():
             youtube_link = self.le_youtube_link.text()
             download_videos([youtube_link])
 
-        pb_download_all.clicked.connect(do_download_all)
+        def do_download_audio():
+            youtube_link = self.le_youtube_link.text()
+            download_videos([youtube_link], ydl_params={"format": "bestaudio"})
+
+        pb_download_video.clicked.connect(do_download_video)
+        pb_download_audio.clicked.connect(do_download_audio)
 
     def focusInEvent(self, event) -> None:
         youtube_link: str = qtw.QApplication.clipboard().text()
@@ -43,6 +51,7 @@ class YtMainWindow(qtw.QMainWindow):
                 video_code = match.groups()[0]
                 self.le_youtube_link.setText(f"https://youtu.be/{video_code}")
                 return
+
 
 if __name__ == "__main__":
     app = qtw.QApplication(sys.argv)
