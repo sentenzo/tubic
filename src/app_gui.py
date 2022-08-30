@@ -1,9 +1,11 @@
 import sys
 import re
 import PyQt6.QtWidgets as qtw
+import PyQt6.QtGui as qtg
+from PyQt6.QtCore import Qt
 
 from qt.py_ui.main_window import Ui_MainWindow
-from ytdpl_wrapper import download_videos
+from ytdpl_wrapper import download_videos, download_thumbnail
 
 
 class YtMainWindow(qtw.QMainWindow):
@@ -22,6 +24,7 @@ class YtMainWindow(qtw.QMainWindow):
         pb_download_audio: qtw.QPushButton = self.findChild(
             qtw.QPushButton, "pb_download_audio"
         )
+        self.l_thumbnail: qtw.QLabel = self.findChild(qtw.QLabel, "l_thumbnail")
 
         def do_download_video():
             youtube_link = self.le_youtube_link.text()
@@ -45,12 +48,18 @@ class YtMainWindow(qtw.QMainWindow):
             # https://youtu.be/cmb6pTj67Nk
             r"https\://youtu\.be/([\w\d-]+).*",
         ]
+        video_code = None
         for re_temp in re_templates:
             match = re.match(re_temp, youtube_link)
             if match and match.groups():
                 video_code = match.groups()[0]
                 self.le_youtube_link.setText(f"https://youtu.be/{video_code}")
-                return
+                break
+        else:
+            return
+
+        thumbnail = download_thumbnail(video_code)
+        self.l_thumbnail.setPixmap(thumbnail)
 
 
 if __name__ == "__main__":
