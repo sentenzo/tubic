@@ -23,7 +23,7 @@ ENTRY_POINT = ./src/$(APP_FILE).py
 all:
 
 pyui:
-	pyuic6 -o ./src/qt/py_ui/main_window.py \
+	pyuic6 -o ./src/qt/pyui/main_window.py \
 	       -x ./src/qt/ui/main_window.ui
 
 build: pyui
