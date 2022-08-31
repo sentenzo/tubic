@@ -1,9 +1,22 @@
 import PyQt6.QtWidgets as qtw
 import PyQt6.QtGui as qtg
+import PyQt6.QtCore as qtc
 from PyQt6.QtWidgets import QFileDialog
 
 from qt.pyui.main_window import Ui_MainWindow
 from yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
+
+
+class DownloadWorker(qtc.QObject):
+    finished = qtc.pyqtSignal()
+
+    def __init__(self, yt_link_wrap_obj: LinkWrapper):
+        super().__init__()
+        self.link_wrap = yt_link_wrap_obj
+
+    def run(self):
+        self.link_wrap.download()
+        self.finished.emit()
 
 
 class YtMainWindow(qtw.QMainWindow):
@@ -24,8 +37,6 @@ class YtMainWindow(qtw.QMainWindow):
         )
         self.l_thumbnail: qtw.QLabel = self.findChild(qtw.QLabel, "l_thumbnail")
 
-        self.setControlsEnabled(False)
-
         self.yt_link_wrap: LinkWrapper = LinkWrapper.get_dummy()
 
         self.pb_download_video.clicked.connect(
@@ -36,20 +47,33 @@ class YtMainWindow(qtw.QMainWindow):
         )
 
     def try_download(self, yt_link_wrap_obj: LinkWrapper):
+        download_folder = qtw.QFileDialog.getExistingDirectory(self, "Select Directory")
+        if download_folder:
+            yt_link_wrap_obj = yt_link_wrap_obj.to(download_folder)
+        self.thread = qtc.QThread()
+        self.worker = DownloadWorker(yt_link_wrap_obj)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+
+        self.thread.start()
+
         self.setControlsEnabled(False)
-        try:
-            download_folder = qtw.QFileDialog.getExistingDirectory(
-                self, "Select Directory"
-            )
-            print(download_folder)
-            if download_folder:
-                yt_link_wrap_obj.to(download_folder).download()
-        finally:
-            self.setControlsEnabled(True)
+        self.thread.finished.connect(lambda: self.setControlsEnabled(True))
 
     def setControlsEnabled(self, value: bool) -> None:
         self.pb_download_video.setEnabled(value)
         self.pb_download_audio.setEnabled(value)
+        self.le_youtube_link.setEnabled(value)
+
+        cursor = qtg.QCursor(qtc.Qt.CursorShape.WaitCursor)
+        if value:
+            cursor = qtg.QCursor(qtc.Qt.CursorShape.ArrowCursor)
+        self.setCursor(cursor)
+        self.l_thumbnail.setCursor(cursor)
 
     def focusInEvent(self, event) -> None:
         youtube_link: str = qtw.QApplication.clipboard().text()
