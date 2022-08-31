@@ -23,23 +23,38 @@ class YtMainWindow(qtw.QMainWindow):
         )
         self.l_thumbnail: qtw.QLabel = self.findChild(qtw.QLabel, "l_thumbnail")
 
-        self.yt_link: LinkWrapper = LinkWrapper.get_dummy()
+        self.setControlsEnabled(False)
 
-        self.pb_download_video.clicked.connect(lambda: self.yt_link.download())
-        self.pb_download_audio.clicked.connect(lambda: self.yt_link.audio().download())
+        self.yt_link_wrap: LinkWrapper = LinkWrapper.get_dummy()
+
+        self.pb_download_video.clicked.connect(lambda: self.yt_link_wrap.download())
+        self.pb_download_audio.clicked.connect(
+            lambda: self.yt_link_wrap.audio().download()
+        )
+
+    def setControlsEnabled(self, value: bool) -> None:
+        self.pb_download_video.setEnabled(value)
+        self.pb_download_audio.setEnabled(value)
 
     def focusInEvent(self, event) -> None:
         youtube_link: str = qtw.QApplication.clipboard().text()
 
         try:
-            self.yt_link = LinkWrapper(youtube_link=youtube_link)
+            new_yt_link = LinkWrapper(youtube_link=youtube_link)
+            if (
+                new_yt_link.video_id == self.yt_link_wrap.video_id
+                and self.le_youtube_link.text()
+            ):
+                # trying to replace with the same link
+                return
+            self.le_youtube_link.setText(new_yt_link.video_url)
+            self.yt_link_wrap = new_yt_link
         except InvalidYoutubeLinkFormat as ex:
             print(ex)
             return
 
         pm_thumbnail = qtg.QPixmap()
-        pm_thumbnail.loadFromData(self.yt_link.download_thumbnail_bytes())
+        pm_thumbnail.loadFromData(self.yt_link_wrap.download_thumbnail_bytes())
         self.l_thumbnail.setPixmap(pm_thumbnail)
 
-        self.pb_download_video.setEnabled(True)
-        self.pb_download_audio.setEnabled(True)
+        self.setControlsEnabled(True)

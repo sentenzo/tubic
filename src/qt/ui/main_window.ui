@@ -47,7 +47,7 @@
       <item>
        <widget class="QPushButton" name="pb_download_video">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
@@ -63,7 +63,7 @@
       <item>
        <widget class="QPushButton" name="pb_download_audio">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="cursor">
          <cursorShape>PointingHandCursor</cursorShape>
