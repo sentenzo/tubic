@@ -1,3 +1,4 @@
+from __future__ import annotations
 import re
 from typing import Any
 import urllib.request as ur
@@ -32,7 +33,7 @@ class BaseLinkWrapper:
         return cls(video_id=YOUTUBE_DUMMY_LINK)
 
     def __init__(self, *, youtube_link=None, video_id=None, ydl_params=None) -> None:
-        self.ydl_params = ydl_params
+        self.ydl_params = ydl_params or {}
         if video_id:
             self.video_id = video_id
         elif youtube_link:
@@ -89,18 +90,26 @@ class LinkWrapper(BaseLinkWrapper):
         with ur.urlopen(self.thumbnail_url) as th:
             return th.read()
 
-    def audio(self) -> BaseLinkWrapper:
+    def _merge_ydl_params(self, add_ydl_params) -> LinkWrapper:
+        ydl_params = self.ydl_params or {}
+        ydl_params = ydl_params | add_ydl_params
+        return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
+
+    def audio(self) -> LinkWrapper:
         """
-        Allows doing
-            link_wrapper.audio().download()
+        Allows doing:
+            link.audio().download()
         insteat of:
             prev_format = link_wrapper.ydl_params["format"]
-            link_wrapper.ydl_params["format"] = "bestaudio"
-            link_wrapper.download()
-            link_wrapper.ydl_params["format"] = prev_format
+            link.ydl_params["format"] = "bestaudio"
+            link.download()
+            link.ydl_params["format"] = prev_format
         """
-        ydl_params = self.ydl_params
-        if not ydl_params:
-            ydl_params = {}
-        ydl_params["format"] = "bestaudio"
-        return BaseLinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
+        return self._merge_ydl_params({"format": "bestaudio"})
+
+    def to(self, download_dir: str) -> LinkWrapper:
+        """
+        Allows doing:
+            link.to("/home/user/yt_downloads/").download()
+        """
+        return self._merge_ydl_params({"paths": {"home": download_dir}})

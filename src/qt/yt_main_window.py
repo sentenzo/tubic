@@ -1,5 +1,6 @@
 import PyQt6.QtWidgets as qtw
 import PyQt6.QtGui as qtg
+from PyQt6.QtWidgets import QFileDialog
 
 from qt.pyui.main_window import Ui_MainWindow
 from yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
@@ -27,10 +28,24 @@ class YtMainWindow(qtw.QMainWindow):
 
         self.yt_link_wrap: LinkWrapper = LinkWrapper.get_dummy()
 
-        self.pb_download_video.clicked.connect(lambda: self.yt_link_wrap.download())
-        self.pb_download_audio.clicked.connect(
-            lambda: self.yt_link_wrap.audio().download()
+        self.pb_download_video.clicked.connect(
+            lambda: self.try_download(self.yt_link_wrap)
         )
+        self.pb_download_audio.clicked.connect(
+            lambda: self.try_download(self.yt_link_wrap.audio())
+        )
+
+    def try_download(self, yt_link_wrap_obj: LinkWrapper):
+        self.setControlsEnabled(False)
+        try:
+            download_folder = qtw.QFileDialog.getExistingDirectory(
+                self, "Select Directory"
+            )
+            print(download_folder)
+            if download_folder:
+                yt_link_wrap_obj.to(download_folder).download()
+        finally:
+            self.setControlsEnabled(True)
 
     def setControlsEnabled(self, value: bool) -> None:
         self.pb_download_video.setEnabled(value)
