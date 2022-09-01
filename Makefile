@@ -28,9 +28,13 @@ pyui:
 
 build: pyui
 	pyinstaller --workpath ./.pyinstaller/build \
-	            --distpath ./bin --specpath ./.pyinstaller \
-	            --noconsole --onefile \
+	            --distpath ./bin \
+	            --specpath ./.pyinstaller \
+	            --noconsole \
+	            --onefile \
 	            --name $(APP_NAME) \
+	            --icon ../rec/ico/file-video.ico \
+	            --add-data ../rec/ico/*;./rec/ico \
 	            $(ENTRY_POINT)
 
 run:

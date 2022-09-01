@@ -19,12 +19,33 @@ class DownloadWorker(qtc.QObject):
         self.finished.emit()
 
 
+def _getWindowIcon() -> qtg.QIcon:
+    import os.path
+    import sys
+
+    rec_file = "./rec/ico/file-video-{0}.png"
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        # _MEIPASS - the env-var pyinstaller sets when the packed application launches
+        #  - it contains the path to the temp directory with the distribution
+        rec_file = os.path.join(sys._MEIPASS, "rec/ico/file-video-{0}.png")
+
+    app_icon = qtg.QIcon()
+    app_icon.addFile(rec_file.format(24), qtc.QSize(24, 24))
+    app_icon.addFile(rec_file.format(48), qtc.QSize(48, 48))
+    app_icon.addFile(rec_file.format(72), qtc.QSize(72, 72))
+    app_icon.addFile(rec_file.format(96), qtc.QSize(96, 96))
+
+    return app_icon
+
+
 class YtMainWindow(qtw.QMainWindow):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         Ui_MainWindow().setupUi(self)
         self.setFocus()
         self.setFixedSize(self.size())
+
+        self.setWindowIcon(_getWindowIcon())
 
         self.le_youtube_link: qtw.QLineEdit = self.findChild(
             qtw.QLineEdit, "le_youtube_link"

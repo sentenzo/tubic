@@ -8,9 +8,12 @@ bin
 
 .pyinstaller
 
+sandbox
+
 # download formates 
 *.mp4
 *.mp3
 *.ogg
 *.flv
 *.webm
+
