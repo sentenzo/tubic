@@ -1,62 +1,16 @@
+from concurrent.futures import thread
 import PyQt6.QtWidgets as qtw
 import PyQt6.QtGui as qtg
 import PyQt6.QtCore as qtc
-from PyQt6.QtWidgets import QFileDialog
 
-from qt.pyui.main_window import Ui_MainWindow
+from qt.py.main_window import MainWindowBase
 from yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
+from qt.workers import DownloadWorker
 
 
-class DownloadWorker(qtc.QObject):
-    finished = qtc.pyqtSignal()
-
-    def __init__(self, yt_link_wrap_obj: LinkWrapper):
-        super().__init__()
-        self.link_wrap = yt_link_wrap_obj
-
-    def run(self):
-        self.link_wrap.download()
-        self.finished.emit()
-
-
-def _getWindowIcon() -> qtg.QIcon:
-    import os.path
-    import sys
-
-    rec_file = "./rec/ico/file-video-{0}.png"
-    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
-        # _MEIPASS - the env-var pyinstaller sets when the packed application launches
-        #  - it contains the path to the temp directory with the distribution
-        rec_file = os.path.join(sys._MEIPASS, "rec/ico/file-video-{0}.png")
-
-    app_icon = qtg.QIcon()
-    app_icon.addFile(rec_file.format(24), qtc.QSize(24, 24))
-    app_icon.addFile(rec_file.format(48), qtc.QSize(48, 48))
-    app_icon.addFile(rec_file.format(72), qtc.QSize(72, 72))
-    app_icon.addFile(rec_file.format(96), qtc.QSize(96, 96))
-
-    return app_icon
-
-
-class YtMainWindow(qtw.QMainWindow):
+class YtMainWindow(MainWindowBase):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        Ui_MainWindow().setupUi(self)
-        self.setFocus()
-        self.setFixedSize(self.size())
-
-        self.setWindowIcon(_getWindowIcon())
-
-        self.le_youtube_link: qtw.QLineEdit = self.findChild(
-            qtw.QLineEdit, "le_youtube_link"
-        )
-        self.pb_download_video: qtw.QPushButton = self.findChild(
-            qtw.QPushButton, "pb_download_video"
-        )
-        self.pb_download_audio: qtw.QPushButton = self.findChild(
-            qtw.QPushButton, "pb_download_audio"
-        )
-        self.l_thumbnail: qtw.QLabel = self.findChild(qtw.QLabel, "l_thumbnail")
 
         self.yt_link_wrap: LinkWrapper = LinkWrapper.get_dummy()
 
@@ -71,30 +25,12 @@ class YtMainWindow(qtw.QMainWindow):
         download_folder = qtw.QFileDialog.getExistingDirectory(self, "Select Directory")
         if download_folder:
             yt_link_wrap_obj = yt_link_wrap_obj.to(download_folder)
-        self.thread = qtc.QThread()
-        self.worker = DownloadWorker(yt_link_wrap_obj)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
 
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
+        thread = DownloadWorker.create_thread(yt_link_wrap_obj)
+        thread.start()
 
-        self.thread.start()
-
-        self.setControlsEnabled(False)
-        self.thread.finished.connect(lambda: self.setControlsEnabled(True))
-
-    def setControlsEnabled(self, value: bool) -> None:
-        self.pb_download_video.setEnabled(value)
-        self.pb_download_audio.setEnabled(value)
-        self.le_youtube_link.setEnabled(value)
-
-        cursor = qtg.QCursor(qtc.Qt.CursorShape.WaitCursor)
-        if value:
-            cursor = qtg.QCursor(qtc.Qt.CursorShape.ArrowCursor)
-        self.setCursor(cursor)
-        self.l_thumbnail.setCursor(cursor)
+        self.lock_input()
+        thread.finished.connect(self.unlock_input)
 
     def focusInEvent(self, event) -> None:
         youtube_link: str = qtw.QApplication.clipboard().text()
@@ -105,16 +41,17 @@ class YtMainWindow(qtw.QMainWindow):
                 new_yt_link.video_id == self.yt_link_wrap.video_id
                 and self.le_youtube_link.text()
             ):
-                # trying to replace with the same link
-                return
+                # the user trys to replace with the same link, so ...
+                return  # ... my job here is done!
             self.le_youtube_link.setText(new_yt_link.video_url)
             self.yt_link_wrap = new_yt_link
         except InvalidYoutubeLinkFormat as ex:
-            print(ex)
+            print(f"InvalidYoutubeLinkFormat: {ex}")
             return
 
         pm_thumbnail = qtg.QPixmap()
         pm_thumbnail.loadFromData(self.yt_link_wrap.download_thumbnail_bytes())
         self.l_thumbnail.setPixmap(pm_thumbnail)
 
-        self.setControlsEnabled(True)
+        # the download buttons are initially locked
+        self.unlock_input()

@@ -20,7 +20,7 @@ APP_NAME = yt-dpl-qt6
 
 ENTRY_POINT = ./src/$(APP_FILE).py
 
-all:
+all: build
 
 pyui:
 	pyuic6 -o ./src/qt/pyui/main_window.py \
