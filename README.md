@@ -3,7 +3,7 @@
 # yt-dlp-qt6
 ![Screenshot](yt-dlp-qt6.webp)
 
-A simple grafical interface for [yt-dlp](https://github.com/yt-dlp/yt-dlp) tool.
+A simple graphical interface for the [yt-dlp](https://github.com/yt-dlp/yt-dlp) tool.
 
 The application is packed in a single executable file with no dependencies.
 
