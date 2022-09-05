@@ -20,11 +20,14 @@ class MainWindow(MainWindowBase):
         self.pb_download_audio.clicked.connect(
             lambda: self.try_download(self.yt_link_wrap.audio())
         )
+        self.set_status_line("ready")
 
     def try_download(self, yt_link_wrap_obj: LinkWrapper):
         download_folder = qtw.QFileDialog.getExistingDirectory(self, "Select Directory")
         if download_folder:
             yt_link_wrap_obj = yt_link_wrap_obj.to(download_folder)
+
+        self.set_status_line("preparations")
 
         thread = DownloadVideoWorker.create_thread(self, yt_link_wrap_obj)
         thread.start()
@@ -52,6 +55,8 @@ class MainWindow(MainWindowBase):
         pm_thumbnail = qtg.QPixmap()
         pm_thumbnail.loadFromData(self.yt_link_wrap.download_thumbnail_bytes())
         self.l_thumbnail.setPixmap(pm_thumbnail)
+        self.status_line_descriptor = self.yt_link_wrap.video_id
+        self.set_status_line("ready")
 
         # the download buttons are initially locked
         self.unlock_input()

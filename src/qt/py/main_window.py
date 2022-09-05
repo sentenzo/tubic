@@ -19,6 +19,10 @@ class MainWindowBase(qtw.QMainWindow):
         self.setFixedSize(self.size())
         self.setWindowIcon(helpers.getWindowIcon())
 
+        self.status_line_descriptor = (
+            "-" * 11
+        )  # youtube video id usually contains 11 symbols
+
         _f = self.findChild
         self.le_youtube_link: qtw.QLineEdit = _f(qtw.QLineEdit, "le_youtube_link")
         self.pb_download_video: qtw.QPushButton = _f(
@@ -28,6 +32,7 @@ class MainWindowBase(qtw.QMainWindow):
             qtw.QPushButton, "pb_download_audio"
         )
         self.l_thumbnail: qtw.QLabel = _f(qtw.QLabel, "l_thumbnail")
+        self.l_status: qtw.QLabel = _f(qtw.QLabel, "l_status")
 
         self.thread_pool = set()
 
@@ -47,3 +52,8 @@ class MainWindowBase(qtw.QMainWindow):
 
     def unlock_input(self) -> None:
         self._set_lock_input(False)
+
+    def set_status_line(self, status_line: str, descriptor: str = None) -> None:
+        descriptor = descriptor or self.status_line_descriptor
+        text = f"[{descriptor}]: {status_line}"
+        self.l_status.setText(text)

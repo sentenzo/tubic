@@ -1,6 +1,6 @@
 from __future__ import annotations
 import re
-from typing import Any
+from typing import Any, Callable
 import urllib.request as ur
 
 from yt_dlp import YoutubeDL
@@ -113,3 +113,14 @@ class LinkWrapper(BaseLinkWrapper):
             link.to("/home/user/yt_downloads/").download()
         """
         return self._merge_ydl_params({"paths": {"home": download_dir}})
+
+    def progress_hook(
+        self,
+        progress_hook: Callable,
+    ) -> LinkWrapper:
+        ydl_params = self.ydl_params or {}
+        if "progress_hooks" in ydl_params:
+            ydl_params["progress_hooks"].append(progress_hook)
+        else:
+            ydl_params["progress_hooks"] = [progress_hook]
+        return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
