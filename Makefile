@@ -16,7 +16,7 @@ endif
 # APP_FILE = app
 APP_FILE = app_gui
 
-APP_NAME = yt-dpl-qt6
+APP_NAME = yt-dlp-qt6
 
 ENTRY_POINT = ./src/$(APP_FILE).py
 

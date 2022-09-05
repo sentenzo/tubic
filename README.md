@@ -1,4 +1,13 @@
-Clumsy tinkering with [yt-dlp](https://github.com/yt-dlp/yt-dlp) lib
+
+
+# yt-dlp-qt6
+![Screenshot](yt-dlp-qt6.webp)
+
+A simple grafical interface for [yt-dlp](https://github.com/yt-dlp/yt-dlp) tool.
+
+The application is packed in a single executable file with no dependencies.
+
+The target OS is currently Windows ≥ 10. Though, there's no OS-dependent features or libs used, so you're free to try and build it on Linux.
 
 --- 
 
