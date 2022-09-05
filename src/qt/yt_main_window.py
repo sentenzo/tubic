@@ -5,10 +5,10 @@ import PyQt6.QtCore as qtc
 
 from qt.py.main_window import MainWindowBase
 from yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
-from qt.workers import DownloadWorker
+from qt.workers import DownloadVideoWorker
 
 
-class YtMainWindow(MainWindowBase):
+class MainWindow(MainWindowBase):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
@@ -26,7 +26,7 @@ class YtMainWindow(MainWindowBase):
         if download_folder:
             yt_link_wrap_obj = yt_link_wrap_obj.to(download_folder)
 
-        thread = DownloadWorker.create_thread(yt_link_wrap_obj)
+        thread = DownloadVideoWorker.create_thread(self, yt_link_wrap_obj)
         thread.start()
 
         self.lock_input()

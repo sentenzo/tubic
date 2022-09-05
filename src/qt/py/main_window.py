@@ -8,7 +8,7 @@ import qt.helpers as helpers
 
 class MainWindowBase(qtw.QMainWindow):
     """
-    The interlayer base class between QMainWindow and the functional MainWindow class.
+    The interlayer baseclass between QMainWindow and the functional MainWindow class.
     It refines the UI functionality in a way hardly achievable with auto-generated code.
     """
 
@@ -28,6 +28,8 @@ class MainWindowBase(qtw.QMainWindow):
             qtw.QPushButton, "pb_download_audio"
         )
         self.l_thumbnail: qtw.QLabel = _f(qtw.QLabel, "l_thumbnail")
+
+        self.thread_pool = set()
 
     def _set_lock_input(self, locked) -> None:
         self.pb_download_video.setEnabled(locked == False)
