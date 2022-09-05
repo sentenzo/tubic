@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "yt-dlp-qt6"
+version = "1.0.0"
+description = "yt-dlp + pyqt6 == ♥️"
+authors = ["sentenzo <kassiyskley@rambler.ru>"]
+license = "MIT license"
+readme = "README.md"
+packages = [{include = "yt_dlp_qt6"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+yt-dlp = "2022.9.1"
+PyQt6 = "6.3.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.8.0"
+pyinstaller = "4.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
