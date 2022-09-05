@@ -23,25 +23,27 @@ ENTRY_POINT = ./src/$(APP_FILE).py
 all: build
 
 pyui:
-	pyuic6 -o ./src/qt/pyui/main_window.py \
-	       -x ./src/qt/ui/main_window.ui
+	poetry run python -m PyQt6.uic.pyuic \
+	    -o ./src/qt/pyui/main_window.py \
+	    -x ./src/qt/ui/main_window.ui
 
 build: pyui
-	pyinstaller --workpath ./.pyinstaller/build \
-	            --distpath ./bin \
-	            --specpath ./.pyinstaller \
-	            --noconsole \
-	            --onefile \
-	            --name $(APP_NAME) \
-	            --icon ../rec/ico/file-video.ico \
-	            --add-data ../rec/ico/*;./rec/ico \
-	            $(ENTRY_POINT)
+	poetry run python -m pyinstaller \
+	    --workpath ./.pyinstaller/build \
+	    --distpath ./bin \
+	    --specpath ./.pyinstaller \
+	    --noconsole \
+	    --onefile \
+	    --name $(APP_NAME) \
+	    --icon ../rec/ico/file-video.ico \
+	    --add-data ../rec/ico/*;./rec/ico \
+	    $(ENTRY_POINT)
 
 run:
 	./bin/$(APP_NAME)
 
 runpy: pyui
-	$(PYTHON) $(ENTRY_POINT)
+	poetry run python $(ENTRY_POINT)
 
 clean:
 	$(RM) $(call FixPath,./bin/*)
