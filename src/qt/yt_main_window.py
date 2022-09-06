@@ -5,7 +5,7 @@ import PyQt6.QtCore as qtc
 
 from qt.py.main_window import MainWindowBase
 from yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
-from qt.workers import DownloadVideoWorker
+from qt.workers import DownloadVideoWorker, DownloadThumbnailWorker
 
 
 class MainWindow(MainWindowBase):
@@ -32,31 +32,23 @@ class MainWindow(MainWindowBase):
         thread = DownloadVideoWorker.create_thread(self, yt_link_wrap_obj)
         thread.start()
 
-        self.lock_input()
-        thread.finished.connect(self.unlock_input)
-
     def focusInEvent(self, event) -> None:
         youtube_link: str = qtw.QApplication.clipboard().text()
-
+        new_yt_link_wrap = None
         try:
-            new_yt_link = LinkWrapper(youtube_link=youtube_link)
-            if (
-                new_yt_link.video_id == self.yt_link_wrap.video_id
-                and self.le_youtube_link.text()
-            ):
-                # the user trys to replace with the same link, so ...
-                return  # ... my job here is done!
-            self.le_youtube_link.setText(new_yt_link.video_url)
-            self.yt_link_wrap = new_yt_link
+            new_yt_link_wrap = LinkWrapper(youtube_link=youtube_link)
         except InvalidYoutubeLinkFormat as ex:
-            print(f"InvalidYoutubeLinkFormat: {ex}")
             return
+        if (
+            new_yt_link_wrap.video_id == self.yt_link_wrap.video_id
+            and self.pb_download_video.isEnabled()
+        ):
+            # the user trys to replace with the same link, so ...
+            return  # ... my job here is done!
+        self.le_youtube_link.setText(new_yt_link_wrap.video_url)
+        self.yt_link_wrap = new_yt_link_wrap
 
-        pm_thumbnail = qtg.QPixmap()
-        pm_thumbnail.loadFromData(self.yt_link_wrap.download_thumbnail_bytes())
-        self.l_thumbnail.setPixmap(pm_thumbnail)
-        self.status_line_descriptor = self.yt_link_wrap.video_id
-        self.set_status_line("ready")
+        self.set_status_line("fetching thumbnail")
 
-        # the download buttons are initially locked
-        self.unlock_input()
+        thread = DownloadThumbnailWorker.create_thread(self, self.yt_link_wrap)
+        thread.start()

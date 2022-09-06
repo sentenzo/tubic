@@ -24,6 +24,7 @@ class Worker(qtc.QObject):
         worker = cls(*args)
         worker.moveToThread(thread)
 
+        thread.started.connect(window.lock_input)
         thread.started.connect(worker.run)
 
         thread.worker = worker  # without this line worker disappears from the scope before the thread launches it
@@ -31,6 +32,7 @@ class Worker(qtc.QObject):
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(lambda: window.thread_pool.remove(thread))
+        thread.finished.connect(window.unlock_input)
         thread.finished.connect(thread.deleteLater)
 
         return thread
@@ -73,11 +75,30 @@ class DownloadVideoWorker(Worker):
         link_wrap_obj = link_wrap_obj.progress_hook(progress_hook)
 
         thread = super().create_thread(window, link_wrap_obj)
-        thread.started.connect(window.lock_input)
         return thread
 
 
-# class DownloadThumbnailWorker(Worker):
-#     def __init__(self, link_wrap_obj: LinkWrapper):
-#         super().__init__()
-#         self.link_wrap = link_wrap_obj
+class DownloadThumbnailWorker(Worker):
+    def __init__(self, link_wrap_obj: LinkWrapper):
+        super().__init__()
+        self.link_wrap = link_wrap_obj
+
+    def run(self):
+        self.link_wrap.get_thumbnail_bytes()
+        self.finished.emit()
+
+    @classmethod
+    def create_thread(cls, window: MainWindowBase, link_wrap_obj: LinkWrapper):
+        thread = super().create_thread(window, link_wrap_obj)
+
+        def on_thread_finished():
+            thumbnail_bytes = link_wrap_obj.get_thumbnail_bytes()
+            pm_thumbnail = qtg.QPixmap()
+            pm_thumbnail.loadFromData(thumbnail_bytes)
+            window.l_thumbnail.setPixmap(pm_thumbnail)
+            window.status_line_descriptor = link_wrap_obj.video_id
+            window.set_status_line("ready")
+
+        thread.finished.connect(on_thread_finished)
+
+        return thread
