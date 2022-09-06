@@ -86,9 +86,14 @@ class LinkWrapper(BaseLinkWrapper):
 
         return self.cache["thumbnail_url"]
 
-    def download_thumbnail_bytes(self) -> list[bytes]:
+    def _download_thumbnail_bytes(self) -> list[bytes]:
         with ur.urlopen(self.thumbnail_url) as th:
             return th.read()
+
+    def get_thumbnail_bytes(self) -> list[bytes]:
+        if not "thumbnail_bytes" in self.cache:
+            self.cache["thumbnail_bytes"] = self._download_thumbnail_bytes()
+        return self.cache["thumbnail_bytes"]
 
     def _merge_ydl_params(self, add_ydl_params) -> LinkWrapper:
         ydl_params = self.ydl_params or {}
