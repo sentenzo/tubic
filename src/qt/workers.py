@@ -47,19 +47,28 @@ class DownloadVideoWorker(Worker):
 
     @classmethod
     def create_thread(cls, window: MainWindowBase, link_wrap_obj: LinkWrapper):
+        def progress_bar_pseudo_graphic(value: int, total: int) -> str:
+            pb_str_len = 30  # the length of the pseudo graphic progress bar
+            full, empty = "■", "□"
+            if value >= total:
+                return full * pb_str_len
+            full_count = int(pb_str_len * value / total)
+            empty_count = pb_str_len - full_count
+            return full * full_count + empty * empty_count
+
         def progress_hook(msg):
             status = msg["status"]
             if status == "downloading":
                 downloaded = msg["downloaded_bytes"]
                 total = msg["total_bytes"]
-                print("\n", f"downloaded={downloaded}, total={total}")
                 total = max(total, 1)  # ZeroDivisionError prevention (just in case)
                 percent = 100 * downloaded / total
-                window.set_status_line(f"downloading -  {percent:05.2f}%")
+
+                pbpg = progress_bar_pseudo_graphic(downloaded, total)
+                window.set_status_line(f"working  - {pbpg} - {percent:05.2f}%")
             elif status == "finished":
-                window.set_status_line(r"downloading - 100.00% - finished")
-            # print("\n", msg["status"], list(msg.keys()))
-            qtg.QGuiApplication.processEvents()  # refresh status_line text
+                pbpg = progress_bar_pseudo_graphic(100, 100)
+                window.set_status_line(f"finished - {pbpg} - 100.00%")
 
         link_wrap_obj = link_wrap_obj.progress_hook(progress_hook)
 
