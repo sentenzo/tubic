@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "yt-dlp-qt6"
-version = "1.0.0"
+name = "tubic"
+version = "1.0.1"
 description = "yt-dlp + pyqt6 == ♥️"
 authors = ["sentenzo <kassiyskley@rambler.ru>"]
 license = "MIT license"
