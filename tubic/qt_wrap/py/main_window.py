@@ -2,8 +2,8 @@ import PyQt6.QtWidgets as qtw
 import PyQt6.QtGui as qtg
 import PyQt6.QtCore as qtc
 
-from qt.pyui.main_window import Ui_MainWindow
-import qt.helpers as helpers
+from qt_wrap.pyui.main_window import Ui_MainWindow
+import qt_wrap.helpers as helpers
 
 
 class MainWindowBase(qtw.QMainWindow):

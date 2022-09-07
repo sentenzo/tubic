@@ -16,16 +16,16 @@ endif
 # APP_FILE = app
 APP_FILE = app_gui
 
-APP_NAME = yt-dlp-qt6
+APP_NAME = tubic
 
-ENTRY_POINT = ./src/$(APP_FILE).py
+ENTRY_POINT = ./$(APP_NAME)/$(APP_FILE).py
 
 all: build
 
 pyui:
 	poetry run python -m PyQt6.uic.pyuic \
-	    -o ./src/qt/pyui/main_window.py \
-	    -x ./src/qt/ui/main_window.ui
+	    -o ./$(APP_NAME)/qt_wrap/pyui/main_window.py \
+	    -x ./$(APP_NAME)/qt_wrap/ui/main_window.ui
 
 build: pyui
 	poetry run python -m pyinstaller \
