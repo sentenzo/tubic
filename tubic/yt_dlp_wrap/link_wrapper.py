@@ -4,7 +4,8 @@ from typing import Any, Callable
 import urllib.request as ur
 
 from yt_dlp import YoutubeDL
-from yt_dlp_wrap.config import *
+
+from tubic.yt_dlp_wrap.config import *
 
 
 class InvalidYoutubeLinkFormat(ValueError):

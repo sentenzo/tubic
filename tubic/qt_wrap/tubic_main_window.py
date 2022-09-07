@@ -3,9 +3,9 @@ import PyQt6.QtWidgets as qtw
 import PyQt6.QtGui as qtg
 import PyQt6.QtCore as qtc
 
-from qt_wrap.py.main_window import MainWindowBase
-from yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
-from qt_wrap.workers import DownloadVideoWorker, DownloadThumbnailWorker
+from tubic.qt_wrap.py.main_window import MainWindowBase
+from tubic.qt_wrap.workers import DownloadVideoWorker, DownloadThumbnailWorker
+from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
 
 
 class MainWindow(MainWindowBase):

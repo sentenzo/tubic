@@ -1,9 +1,9 @@
 # from abc import ABC, abstractmethod
 import PyQt6.QtCore as qtc
 import PyQt6.QtGui as qtg
-from qt_wrap.py.main_window import MainWindowBase
 
-from yt_dlp_wrap.link_wrapper import LinkWrapper
+from tubic.qt_wrap.py.main_window import MainWindowBase
+from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper
 
 
 class Worker(qtc.QObject):

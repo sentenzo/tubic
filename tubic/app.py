@@ -1,5 +1,5 @@
 import sys
-from yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
+from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
 
 if __name__ == "__main__":
     for link in sys.argv[1:]:
