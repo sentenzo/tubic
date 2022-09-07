@@ -39,6 +39,10 @@ YT_LINKS_POOL.VARIOUS_LINK_FORMATS = [
     "https://youtu.be/QPXU59boiUA?t=56",  # short with time
     "https://youtu.be/QPXU59boiUA?sxsrf=ALiiNpYirt-Q%3A166357211&ei=zXMXY6XDDMiurgTVuJ_wCA&gs_lcp=Cgdnd3Mtd2l6EAMYA&sclient=gws-wiz",  # short with garbage params
     "https://www.youtube.com/embed/QPXU59boiUA",  # embed
+    #
+    "https://www.youtube.com/watch?v=QPXU59boiUA__anything_longer_then_11_simbols_will_be_cut_off",
+    "https://youtu.be/QPXU59boiUA__anything_longer_then_11_simbols_will_be_cut_off",
+    # "https://www.youtube.com/embed/QPXU59boiUA__and_this_one_will_break",
 ]
 
 YT_LINKS_POOL.VARIOUS_MAX_RESOLUTION = [
@@ -70,12 +74,12 @@ YT_LINKS_POOL.INCORRECT_VIDEO_IDS.NON_STRINGS = [
     (lambda a, b, c: a + b + c),
 ]
 YT_LINKS_POOL.INCORRECT_VIDEO_IDS.BAD_STRINGS = [
-    #
     "",  # the string is empty
-    "QX5biAPU9oU",  # video with such id doesn't exist
     "QPXU59boiU",  # video id is too short
-    "wQPXU59boioU",  # video id is too long
     "QPXU59b*iUA",  # wrong format
+]
+YT_LINKS_POOL.INCORRECT_VIDEO_IDS.NOT_EXIST = [
+    "QX5biAPU9oU",  # video with such id doesn't exist
 ]
 YT_LINKS_POOL.INCORRECT_VIDEO_IDS.DELETED = [
     "0kZ_2hxPTTo",
@@ -92,7 +96,10 @@ YT_LINKS_POOL.INCORRECT_VIDEO_IDS.PRIVATE = [
 YT_LINKS_POOL.INCORRECT_LINKS = _DUMMY()
 YT_LINKS_POOL.INCORRECT_LINKS.NON_STRINGS = (
     YT_LINKS_POOL.INCORRECT_VIDEO_IDS.NON_STRINGS
-    + ["dQw4w9WgXcQ"]  # a correct video id is not a url
+    + [
+        "dQw4w9WgXcQ",  # a correct video id is not a url
+        "https://www.youtube.com/embed/QPXU59boiUA__this_one_will_break",
+    ]
 )
 
 some_working_link = "http://www.youtube.com/watch?v=QPXU59boiUA"
@@ -102,6 +109,10 @@ YT_LINKS_POOL.INCORRECT_LINKS.BAD_STRINGS = [
         some_working_link[:i] + some_working_link[i + 1 :]
         for i in range(len(some_working_link))
     ],
+]
+
+YT_LINKS_POOL.INCORRECT_LINKS.NOT_EXIST = [
+    *map(_video_id_to_link, YT_LINKS_POOL.INCORRECT_VIDEO_IDS.NOT_EXIST),
 ]
 YT_LINKS_POOL.INCORRECT_LINKS.DELETED = [
     *map(_video_id_to_link, YT_LINKS_POOL.INCORRECT_VIDEO_IDS.DELETED),

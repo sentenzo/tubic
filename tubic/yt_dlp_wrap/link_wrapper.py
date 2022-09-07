@@ -42,12 +42,13 @@ class BaseLinkWrapper:
         return cls(youtube_link=YOUTUBE_DUMMY_LINK)
 
     def __init__(self, *, youtube_link=None, video_id=None, ydl_params=None) -> None:
+        self.video_id = None
         self.ydl_params = ydl_params or {}
-        if video_id:
+        if video_id != None:
             self.video_id = BaseLinkWrapper._try_fetch_any_re(
                 YOUTUBE_RE_VIDEO_ID, video_id, InvalidYoutubeVideoIdFormat(video_id)
             )
-        elif youtube_link:
+        elif youtube_link != None:
             self.video_id = BaseLinkWrapper._try_fetch_any_re(
                 YOUTUBE_RE_LINK, youtube_link, InvalidYoutubeLinkFormat(youtube_link)
             )
@@ -62,7 +63,7 @@ class BaseLinkWrapper:
             ydl.download(self.video_id)
 
     def __repr__(self) -> str:
-        return f'{type(self).__name__}(video_id="{self.video_id}")'
+        return f"{type(self).__name__}(video_id={self.video_id.__repr__()})"
 
 
 class LinkWrapper(BaseLinkWrapper):

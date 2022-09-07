@@ -2,7 +2,7 @@ YOUTUBE_RE_LINK = (
     # https://www.youtube.com/watch?v=cmb6pTj67Nk
     r"https\://www\.youtube\.com/watch\?v=([\w\d-]{11})",
     # https://www.youtube.com/embed/cmb6pTj67Nk
-    r"https\://www\.youtube\.com/embed/([\w\d-]{11})",
+    r"https\://www\.youtube\.com/embed/([\w\d-]{11})(\?.*)?$",
     # https://youtu.be/cmb6pTj67Nk
     r"https\://youtu\.be/([\w\d-]{11})",
 )

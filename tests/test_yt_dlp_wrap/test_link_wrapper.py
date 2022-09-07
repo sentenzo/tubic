@@ -23,7 +23,7 @@ def test_ping(url):
     assert ping(url)
 
 
-def test_obj_init():
+def test_link_wrapper_init():
     for yt_link in YT_LINKS_POOL.SHORT_VIDEOS + YT_LINKS_POOL.VARIOUS_LINK_FORMATS:
         lw = ydlw.LinkWrapper(youtube_link=yt_link)
         assert len(lw.video_id) == 11
@@ -33,6 +33,16 @@ def test_obj_init():
     with pytest.raises(ydlw.NotEnoughParametersToInitLinkWrapper):
         lw = ydlw.LinkWrapper()
 
-    # for bad_yt_link in YT_LINKS_POOL.INCORRECT_LINKS.NON_STRINGS:
-    #     with pytest.raises(ydlw.InvalidYoutubeLinkFormat):
-    #         lw = ydlw.LinkWrapper(youtube_link=bad_yt_link)
+    for bad_video_id in (
+        YT_LINKS_POOL.INCORRECT_VIDEO_IDS.NON_STRINGS
+        + YT_LINKS_POOL.INCORRECT_VIDEO_IDS.BAD_STRINGS
+    ):
+        with pytest.raises(ydlw.InvalidYoutubeVideoIdFormat):
+            lw = ydlw.LinkWrapper(video_id=bad_video_id)
+
+    for bad_yt_link in (
+        YT_LINKS_POOL.INCORRECT_LINKS.NON_STRINGS
+        + YT_LINKS_POOL.INCORRECT_LINKS.BAD_STRINGS
+    ):
+        with pytest.raises(ydlw.InvalidYoutubeLinkFormat):
+            lw = ydlw.LinkWrapper(youtube_link=bad_yt_link)
