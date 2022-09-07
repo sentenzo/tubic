@@ -28,7 +28,7 @@ pyui:
 	    -x ./$(APP_NAME)/qt_wrap/ui/main_window.ui
 
 build: pyui
-	poetry run python -m pyinstaller \
+	poetry run pyinstaller \
 	    --workpath ./.pyinstaller/build \
 	    --distpath ./bin \
 	    --specpath ./.pyinstaller \
