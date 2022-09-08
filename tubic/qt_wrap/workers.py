@@ -6,13 +6,21 @@ from tubic.qt_wrap.py.main_window import MainWindowBase
 from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper
 
 
+class WorkerAborted(Exception):
+    pass
+
+
 class Worker(qtc.QObject):
     finished = qtc.pyqtSignal()
+    aborted = qtc.pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
 
     def run(self):
+        pass
+
+    def abort(self):
         pass
 
     @classmethod
@@ -31,6 +39,7 @@ class Worker(qtc.QObject):
 
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
+        worker.aborted.connect(worker.abort)
         thread.finished.connect(lambda: window.thread_pool.remove(thread))
         thread.finished.connect(window.unlock_input)
         thread.finished.connect(thread.deleteLater)
@@ -44,8 +53,14 @@ class DownloadVideoWorker(Worker):
         self.link_wrap = link_wrap_obj
 
     def run(self):
-        self.link_wrap.download()
+        try:
+            self.link_wrap.download()
+        except WorkerAborted as ex:
+            self.aborted.emit()
         self.finished.emit()
+
+    def abort(self):
+        pass
 
     @classmethod
     def create_thread(cls, window: MainWindowBase, link_wrap_obj: LinkWrapper):
@@ -59,6 +74,11 @@ class DownloadVideoWorker(Worker):
             return full * full_count + empty * empty_count
 
         def progress_hook(msg):
+            nonlocal window
+            if window._abort_one_worker:
+                window._abort_one_worker = False
+                window.set_status_line(f"download was aborted")
+                raise WorkerAborted("Download was aborted")
             status = msg["status"]
             if status == "downloading":
                 downloaded = msg["downloaded_bytes"]

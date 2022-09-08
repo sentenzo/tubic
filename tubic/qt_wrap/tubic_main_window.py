@@ -15,21 +15,37 @@ class MainWindow(MainWindowBase):
         self.yt_link_wrap: LinkWrapper = LinkWrapper.get_dummy()
 
         self.pb_download_video.clicked.connect(
-            lambda: self.try_download(self.yt_link_wrap)
+            lambda: self.try_download(self.yt_link_wrap, hide=self.pb_download_video)
         )
         self.pb_download_audio.clicked.connect(
-            lambda: self.try_download(self.yt_link_wrap.audio())
+            lambda: self.try_download(
+                self.yt_link_wrap.audio(), hide=self.pb_download_audio
+            )
         )
+        self.pb_abort_download.clicked.connect(self.abort_one_worker)
         self.set_status_line("ready")
 
-    def try_download(self, yt_link_wrap_obj: LinkWrapper):
+    def try_download(
+        self, yt_link_wrap_obj: LinkWrapper, hide: qtw.QWidget | None = None
+    ):
         download_folder = qtw.QFileDialog.getExistingDirectory(self, "Select Directory")
         if download_folder:
             yt_link_wrap_obj = yt_link_wrap_obj.to(download_folder)
+        else:
+            return
 
         self.set_status_line("preparations")
 
         thread = DownloadVideoWorker.create_thread(self, yt_link_wrap_obj)
+        if hide and hide.isVisible():
+            hide.setVisible(False)
+            self.pb_abort_download.setVisible(True)
+            thread.finished.connect(
+                lambda: [
+                    hide.setVisible(True),
+                    self.pb_abort_download.setVisible(False),
+                ]  # a hack to run two lines in a lambda
+            )
         thread.start()
 
     def focusInEvent(self, event) -> None:

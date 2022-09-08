@@ -39,7 +39,7 @@ run:
 	./bin/$(PACKAGE_NAME)
 
 runpy: pyui
-	poetry run python -m $(PACKAGE_NAME).__main__
+	poetry run python -m $(PACKAGE_NAME)
 
 clean:
 	$(RM) $(call FixPath,./bin/*)
