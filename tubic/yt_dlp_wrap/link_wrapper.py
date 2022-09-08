@@ -1,7 +1,9 @@
 from __future__ import annotations
+from genericpath import isdir
 import re
 from typing import Any, Callable
 import urllib.request as ur
+import os
 
 from yt_dlp import YoutubeDL
 
@@ -13,6 +15,10 @@ class InvalidYoutubeLinkFormat(ValueError):
 
 
 class InvalidYoutubeVideoIdFormat(ValueError):
+    pass
+
+
+class InvalidYdlParamsFormat(ValueError):
     pass
 
 
@@ -92,7 +98,7 @@ class LinkWrapper(BaseLinkWrapper):
         return self.cache["info"]
 
     @property
-    def thumbnail_url(self):
+    def thumbnail_url(self) -> str:
         if not "thumbnail_url" in self.cache:
             info = self.info
             thumbnails = [
@@ -134,7 +140,12 @@ class LinkWrapper(BaseLinkWrapper):
         Allows doing:
             link.to("/home/user/yt_downloads/").download()
         """
-        return self._merge_ydl_params({"paths": {"home": download_dir}})
+        if os.path.isdir(download_dir):
+            return self._merge_ydl_params({"paths": {"home": download_dir}})
+        else:
+            raise InvalidYdlParamsFormat(
+                f'Trying to set ydl_params["paths"]["home"]: "{download_dir}" - is not a directory'
+            )
 
     def progress_hook(
         self,
