@@ -46,4 +46,7 @@ clean:
 	$(RM) $(call FixPath,./.pyinstaller/*)
 
 test: pyui
+	poetry run python -m pytest -m "not slow" --verbosity=2 --showlocals --log-level=DEBUG
+
+test-full: pyui
 	poetry run python -m pytest --verbosity=2 --showlocals --log-level=DEBUG
