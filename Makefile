@@ -31,8 +31,8 @@ build: pyui
 	    --noconsole \
 	    --onefile \
 	    --name $(PACKAGE_NAME) \
-	    --icon ../rec/ico/file-video.ico \
-	    --add-data ../rec/ico/*;./rec/ico \
+	    --icon ../$(PACKAGE_NAME)/rec/ico/file-video.ico \
+	    --add-data ../$(PACKAGE_NAME)/rec/ico/*;./$(PACKAGE_NAME)/rec/ico \
 		$(PACKAGE_NAME)/__main__.py
 
 run:

@@ -7,7 +7,7 @@ import PyQt6.QtCore as qtc
 
 def getWindowIcon() -> qtg.QIcon:
 
-    rec_file = "rec/ico/file-video-{0}.png"
+    rec_file = "tubic/rec/ico/file-video-{0}.png"
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         # _MEIPASS - the env-var pyinstaller sets when the packed application launches
         #  - it contains the path to the temp directory with the distribution
