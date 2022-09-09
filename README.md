@@ -10,6 +10,24 @@ A simple lightweight portable single-file program to download videos from YouTub
 
 ---
 
+- [Installation](#installation)
+- [Backstory](#backstory)
+- [Building](#building)
+    - [Software requirements](#software-requirements)
+    - [First run](#first-run)
+    - [GUI editing](#gui-editing)
+    - [Basic `make` targets](#basic-make-targets)
+- [Licensing](#licensing)
+
+## Installation
+
+(non required)
+
+1. Download the executable named `tubic.exe`, from the [latest release](https://github.com/sentenzo/tubic/releases/latest)
+2. Run the executable
+
+## Backstory
+
 Why making another YouTube downloader, when we already have `%YOUR_FAVORITE_APP_NAME%`, which is a lot better, than this stuff will ever be?
 
 Well...
@@ -42,18 +60,16 @@ It uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) (and utilizes probably less t
 
 The UI is implemented with [PyQt6](https://pypi.org/project/PyQt6/).
 
-The application is packed in a single executable file with no dependencies (thanks to [`pyinstaller`](https://pypi.org/project/pyinstaller/)).
+The application is packed in a single executable file with no dependencies (thanks to [pyinstaller](https://pypi.org/project/pyinstaller/)).
 
 The target OS is currently Windows ≥ 10. Though, there's no OS-dependent features or libs used, so you're free to try and build it on Linux.
-
---- 
 
 ## Building
 
 ### Software requirements
 - [**python3.10**](https://www.python.org/downloads/)
 
-- [**make**](https://en.wikipedia.org/wiki/Make_(software)) tool — for build-automation. To install it on Windows, one can try [`GNU make 4.3`](https://community.chocolatey.org/packages/make)  package from the [Chocolatey](https://github.com/chocolatey/choco) package manager.
+- [**make**](https://en.wikipedia.org/wiki/Make_(software)) tool — for build-automation. To install it on Windows, one can try [GNU make 4.3](https://community.chocolatey.org/packages/make)  package from the [Chocolatey](https://github.com/chocolatey/choco) package manager.
 
 - [**Poetry**](https://python-poetry.org/) — to administer Python dependencies.
 
@@ -80,9 +96,8 @@ Qt Designer related files can be found at `tubic/qt_wrap/ui`.
 - `make test` — run unit tests
 - `make runpy` — run app with Python
 - `make build` — create an executable in a `bin` folder
----
 
-## License
+## Licensing
 
 - Current repository is licensed under [MIT License](https://github.com/sentenzo/tubic/blob/master/LICENSE)
 - The icons for this application were taken from paomedia's [small-n-flat](https://github.com/paomedia/small-n-flat) set and licensed under [CC0 1.0 Universal](https://github.com/paomedia/small-n-flat/blob/master/LICENSE)
