@@ -1,13 +1,16 @@
 
 
 # tubic
+<div align="center">
+
 ![Screenshot](tubic.webp)
 
+</div>
 A simple lightweight portable single-file program to download videos from YouTube.
 
 ---
 
-> Why making another YouTube downloader, when we already have `%YOUR_FAVORITE_APP_NAME%`, which is a lot better, than your stuff will ever be?
+Why making another YouTube downloader, when we already have `%YOUR_FAVORITE_APP_NAME%`, which is a lot better, than this stuff will ever be?
 
 Well...
 
@@ -20,15 +23,15 @@ I've been trying out several tools of that kind, and each one of them had some f
  - overweight — installing TarTube once took me something about half an hour
  - console-only — so I was unable to recomend it to my elderly relatives and non-IT friends
  - comercial
- - server-side component — so at some point you find your tool turned into a pumpkin because the servers are down 
+ - server-side component — so at some point you find your tool turned into a pumpkin because the servers are down (that's exactly what happaned with me once)
  - overly complex GUI (again elderly relatives won't appriciate)
 
-So I feel an unfulfilled demand for a very simple tool, which would:
-- -be able to download both video and audio from a YouTube link
+I feel an unfulfilled demand for a very simple tool, which would:
+- -be able to download both video and audio by a YouTube link
 - -have a simple GUI (the less buttons — the better)
 - -be portable (ideally: packed in a single executable)
 
-The features I (subjectively) consider redundant for my subset of use cases:
+The features I (subjectively) consider redundant:
 - sequential download from a list of links
 - post-processing (`video: 1080p → 780p` or `audio: 320 kbps → 96 kbps`)
 - converting formats (`mp4 → mkv` or `webm → mp3`) 
@@ -48,9 +51,9 @@ The target OS is currently Windows ≥ 10. Though, there's no OS-dependent featu
 ## Building
 
 ### Software requirements
-- [**Python3.10**](https://www.python.org/downloads/)
+- [**python3.10**](https://www.python.org/downloads/)
 
-- [**make**](https://en.wikipedia.org/wiki/Make_(software)) tool — for build-automation. To install it on Windows, one can try [`GNU make 4.3`](https://community.chocolatey.org/packages/make)  package from  [Chocolatey](https://github.com/chocolatey/choco) package manager.
+- [**make**](https://en.wikipedia.org/wiki/Make_(software)) tool — for build-automation. To install it on Windows, one can try [`GNU make 4.3`](https://community.chocolatey.org/packages/make)  package from the [Chocolatey](https://github.com/chocolatey/choco) package manager.
 
 - [**Poetry**](https://python-poetry.org/) — to administer Python depandancies.
 
@@ -65,7 +68,11 @@ In the project directory execute:
 ```bash
 poetry install
 ```
-\- to download all the Python packages required.
+\- to download all the Python packages required. 
+
+That's all.
+
+### GUI editing
 
 Qt Designer related files can be found at `tubic/qt_wrap/ui`.
 
