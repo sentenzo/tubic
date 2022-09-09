@@ -1,13 +1,24 @@
 from __future__ import annotations
+from genericpath import isdir
 import re
 from typing import Any, Callable
 import urllib.request as ur
+import os
 
 from yt_dlp import YoutubeDL
-from yt_dlp_wrap.config import *
+
+from tubic.yt_dlp_wrap.config import *
 
 
 class InvalidYoutubeLinkFormat(ValueError):
+    pass
+
+
+class InvalidYoutubeVideoIdFormat(ValueError):
+    pass
+
+
+class InvalidYdlParamsFormat(ValueError):
     pass
 
 
@@ -17,27 +28,36 @@ class NotEnoughParametersToInitLinkWrapper(TypeError):
 
 class BaseLinkWrapper:
     @staticmethod
-    def _retrieve_video_id(youtube_link: str) -> str:
-        video_id = None
-        for re_pattern in YOUTUBE_RE_PATTERNS:
-            match = re.match(re_pattern, youtube_link)
+    def _try_fetch_any_re(
+        re_patterns_collection: list[str], text: str, exception: Exception | None = None
+    ) -> str | None:
+        if not isinstance(text, str):
+            if exception:
+                raise exception
+            return None
+        for re_pattern in re_patterns_collection:
+            match = re.match(re_pattern, text)
             if match and match.groups():
-                video_id = match.groups()[0]
-                break
-        else:
-            raise InvalidYoutubeLinkFormat(youtube_link)
-        return video_id
+                return match.groups()[0]
+        if exception:
+            raise exception
+        return None
 
     @classmethod
     def get_dummy(cls):
-        return cls(video_id=YOUTUBE_DUMMY_LINK)
+        return cls(youtube_link=YOUTUBE_DUMMY_LINK)
 
     def __init__(self, *, youtube_link=None, video_id=None, ydl_params=None) -> None:
+        self.video_id = None
         self.ydl_params = ydl_params or {}
-        if video_id:
-            self.video_id = video_id
-        elif youtube_link:
-            self.video_id = LinkWrapper._retrieve_video_id(youtube_link)
+        if video_id != None:
+            self.video_id = BaseLinkWrapper._try_fetch_any_re(
+                YOUTUBE_RE_VIDEO_ID, video_id, InvalidYoutubeVideoIdFormat(video_id)
+            )
+        elif youtube_link != None:
+            self.video_id = BaseLinkWrapper._try_fetch_any_re(
+                YOUTUBE_RE_LINK, youtube_link, InvalidYoutubeLinkFormat(youtube_link)
+            )
         else:
             raise NotEnoughParametersToInitLinkWrapper(
                 "Both youtube_link and video_id fields are empty"
@@ -47,6 +67,9 @@ class BaseLinkWrapper:
     def download(self):
         with YoutubeDL(params=self.ydl_params) as ydl:
             ydl.download(self.video_id)
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}(video_id={self.video_id.__repr__()})"
 
 
 class LinkWrapper(BaseLinkWrapper):
@@ -75,7 +98,7 @@ class LinkWrapper(BaseLinkWrapper):
         return self.cache["info"]
 
     @property
-    def thumbnail_url(self):
+    def thumbnail_url(self) -> str:
         if not "thumbnail_url" in self.cache:
             info = self.info
             thumbnails = [
@@ -117,7 +140,12 @@ class LinkWrapper(BaseLinkWrapper):
         Allows doing:
             link.to("/home/user/yt_downloads/").download()
         """
-        return self._merge_ydl_params({"paths": {"home": download_dir}})
+        if os.path.isdir(download_dir):
+            return self._merge_ydl_params({"paths": {"home": download_dir}})
+        else:
+            raise InvalidYdlParamsFormat(
+                f'Trying to set ydl_params["paths"]["home"]: "{download_dir}" - is not a directory'
+            )
 
     def progress_hook(
         self,

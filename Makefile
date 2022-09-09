@@ -13,19 +13,15 @@ else
    endif
 endif
 
-# APP_FILE = app
-APP_FILE = app_gui
 
-APP_NAME = tubic
-
-ENTRY_POINT = ./$(APP_NAME)/$(APP_FILE).py
+PACKAGE_NAME = tubic
 
 all: build
 
 pyui:
 	poetry run python -m PyQt6.uic.pyuic \
-	    -o ./$(APP_NAME)/qt_wrap/pyui/main_window.py \
-	    -x ./$(APP_NAME)/qt_wrap/ui/main_window.ui
+	    -o ./$(PACKAGE_NAME)/qt_wrap/pyui/main_window.py \
+	    -x ./$(PACKAGE_NAME)/qt_wrap/ui/main_window.ui
 
 build: pyui
 	poetry run pyinstaller \
@@ -34,17 +30,23 @@ build: pyui
 	    --specpath ./.pyinstaller \
 	    --noconsole \
 	    --onefile \
-	    --name $(APP_NAME) \
-	    --icon ../rec/ico/file-video.ico \
-	    --add-data ../rec/ico/*;./rec/ico \
-	    $(ENTRY_POINT)
+	    --name $(PACKAGE_NAME) \
+	    --icon ../$(PACKAGE_NAME)/rec/ico/file-video.ico \
+	    --add-data ../$(PACKAGE_NAME)/rec/ico/*;./$(PACKAGE_NAME)/rec/ico \
+		$(PACKAGE_NAME)/__main__.py
 
 run:
-	./bin/$(APP_NAME)
+	./bin/$(PACKAGE_NAME)
 
 runpy: pyui
-	poetry run python $(ENTRY_POINT)
+	poetry run python -m $(PACKAGE_NAME)
 
 clean:
 	$(RM) $(call FixPath,./bin/*)
 	$(RM) $(call FixPath,./.pyinstaller/*)
+
+test: pyui
+	poetry run python -m pytest -m "not slow" --verbosity=2 --showlocals --log-level=DEBUG
+
+test-full: pyui
+	poetry run python -m pytest --verbosity=2 --showlocals --log-level=DEBUG

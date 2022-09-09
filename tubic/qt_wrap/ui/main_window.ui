@@ -92,6 +92,25 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="pb_abort_download">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
+        <property name="toolTipDuration">
+         <number>1</number>
+        </property>
+        <property name="text">
+         <string>Abort download</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="pb_download_audio">
         <property name="enabled">
          <bool>false</bool>

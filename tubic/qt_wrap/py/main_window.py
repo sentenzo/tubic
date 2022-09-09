@@ -2,8 +2,8 @@ import PyQt6.QtWidgets as qtw
 import PyQt6.QtGui as qtg
 import PyQt6.QtCore as qtc
 
-from qt_wrap.pyui.main_window import Ui_MainWindow
-import qt_wrap.helpers as helpers
+from tubic.qt_wrap.pyui.main_window import Ui_MainWindow
+import tubic.qt_wrap.helpers as helpers
 
 
 class MainWindowBase(qtw.QMainWindow):
@@ -31,10 +31,16 @@ class MainWindowBase(qtw.QMainWindow):
         self.pb_download_audio: qtw.QPushButton = _f(
             qtw.QPushButton, "pb_download_audio"
         )
+        self.pb_abort_download: qtw.QPushButton = _f(
+            qtw.QPushButton, "pb_abort_download"
+        )
+        self.pb_abort_download.setVisible(False)
+
         self.l_thumbnail: qtw.QLabel = _f(qtw.QLabel, "l_thumbnail")
         self.l_status: qtw.QLabel = _f(qtw.QLabel, "l_status")
 
-        self.thread_pool = set()
+        self.thread_pool: set[qtc.QThread] = set()
+        self._abort_one_worker = False
 
     def _set_lock_input(self, locked) -> None:
         self.pb_download_video.setEnabled(locked == False)
@@ -57,3 +63,6 @@ class MainWindowBase(qtw.QMainWindow):
         descriptor = descriptor or self.status_line_descriptor
         text = f"[{descriptor}]: {status_line}"
         self.l_status.setText(text)
+
+    def abort_one_worker(self):
+        self._abort_one_worker = True
