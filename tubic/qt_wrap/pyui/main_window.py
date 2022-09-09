@@ -92,7 +92,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "tubic"))
         self.l_thumbnail.setText(_translate("MainWindow", "(thumbnail)"))
         self.pb_download_video.setText(_translate("MainWindow", "Download video"))
-        self.pb_abort_download.setText(_translate("MainWindow", "Abort"))
+        self.pb_abort_download.setText(_translate("MainWindow", "Abort download"))
         self.pb_download_audio.setText(_translate("MainWindow", "Download audio"))
         self.l_status.setText(_translate("MainWindow", "[----------]: ready"))
         self.le_youtube_link.setPlaceholderText(_translate("MainWindow", "Copy-paste the youtube video link"))

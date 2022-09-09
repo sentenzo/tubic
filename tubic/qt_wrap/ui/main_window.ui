@@ -106,7 +106,7 @@
          <number>1</number>
         </property>
         <property name="text">
-         <string>Abort</string>
+         <string>Abort download</string>
         </property>
        </widget>
       </item>
