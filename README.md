@@ -23,7 +23,7 @@ I've been trying out several tools of that kind, and each one of them had some f
  - overweight — installing TarTube once took me something about half an hour
  - console-only — so I was unable to recomend it to my elderly relatives and non-IT friends
  - comercial
- - server-side component — so at some point you find your tool turned into a pumpkin because the servers are down (that's exactly what happaned with me once)
+ - server-side component — so at some point you find your tool turned into a pumpkin because the servers are down (that's exactly what happened with me once)
  - overly complex GUI (again elderly relatives won't appriciate)
 
 I feel an unfulfilled demand for a very simple tool, which would:
@@ -55,12 +55,12 @@ The target OS is currently Windows ≥ 10. Though, there's no OS-dependent featu
 
 - [**make**](https://en.wikipedia.org/wiki/Make_(software)) tool — for build-automation. To install it on Windows, one can try [`GNU make 4.3`](https://community.chocolatey.org/packages/make)  package from the [Chocolatey](https://github.com/chocolatey/choco) package manager.
 
-- [**Poetry**](https://python-poetry.org/) — to administer Python depandancies.
+- [**Poetry**](https://python-poetry.org/) — to administer Python dependencies.
 
 - **Qt Designer** — to edit `*.ui` files (to draw windows and GUI elements in WYSIWYG editor). Versions `5.*` and `6.*` are equaly suitable. To install it there are several options:
     - a [third party standalone installer](https://build-system.fman.io/qt-designer-download)
     - a [PySide6 pip package](https://pypi.org/project/PySide6/) (`pip install PySide6` or `poetry add -D PySide6`, and then run `pyside6-designer`)
-    - the [official site](https://www.qt.io/) — ironicaly, not the best way, cause it is not destrebuted separately from all the over Qt tools and requites registration
+    - the [official site](https://www.qt.io/) — ironicaly, not the best way, cause it is not distributed separately from all the over Qt tools and requires registration
 
 ### First run
 In the project directory execute:
@@ -76,7 +76,7 @@ That's all.
 
 Qt Designer related files can be found at `tubic/qt_wrap/ui`.
 
-### Basic `make` tergets
+### Basic `make` targets
 - `make test` — run unit tests
 - `make runpy` — run app with Python
 - `make build` — create an executable in a `bin` folder
