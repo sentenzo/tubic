@@ -21,8 +21,7 @@ A simple lightweight portable single-file program to download videos from YouTub
 
 ## Installation
 
-(non required)
-
+0. You should have a Windows 10 or Windows 11 operating system
 1. Download the executable named `tubic.exe`, from the [latest release](https://github.com/sentenzo/tubic/releases/latest)
 2. Run the executable
 
