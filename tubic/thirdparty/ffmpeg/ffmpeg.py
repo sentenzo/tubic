@@ -1,7 +1,9 @@
 import subprocess
 import os
 
-from tubic.qt_wrap.helpers import fix_path
+from tubic.utils import fix_path
+
+location = fix_path("tubic/thirdparty/ffmpeg/bin/ffmpeg.exe")
 
 
 def ffmpeg__to_mp3(
@@ -14,7 +16,7 @@ def ffmpeg__to_mp3(
         return from_file
     to_file = os.path.join(f_root, ".mp3")
 
-    ffmpeg_args = fix_path("tubic/thirdparty/ffmpeg/bin/ffmpeg.exe")
+    ffmpeg_args = location
     ffmpeg_args.extend(["-i", from_file])
     ffmpeg_args.extend(["-b:a", f"{bitrate}k"])
     ffmpeg_args.append(to_file)

@@ -1,5 +1,4 @@
 from __future__ import annotations
-from genericpath import isdir
 import re
 from typing import Any, Callable
 import urllib.request as ur
@@ -8,6 +7,7 @@ import os
 from yt_dlp import YoutubeDL
 
 from tubic.yt_dlp_wrap.config import *
+from tubic.thirdparty.ffmpeg import ffmpeg
 
 
 class InvalidYoutubeLinkFormat(ValueError):
@@ -134,6 +134,20 @@ class LinkWrapper(BaseLinkWrapper):
             link.ydl_params["format"] = prev_format
         """
         return self._merge_ydl_params({"format": "bestaudio"})
+
+    def mp3(self, bitrate=128):
+        params = {
+            "format": "bestaudio",
+            "ffmpeg_location": ffmpeg.location,
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": bitrate,
+                }
+            ],
+        }
+        return self._merge_ydl_params(params)
 
     def to(self, download_dir: str) -> LinkWrapper:
         """

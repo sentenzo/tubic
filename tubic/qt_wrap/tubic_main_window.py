@@ -19,7 +19,7 @@ class MainWindow(MainWindowBase):
         )
         self.pb_download_audio.clicked.connect(
             lambda: self.try_download(
-                self.yt_link_wrap.audio(), hide=self.pb_download_audio
+                self.yt_link_wrap.mp3(), hide=self.pb_download_audio
             )
         )
         self.pb_abort_download.clicked.connect(self.abort_one_worker)
