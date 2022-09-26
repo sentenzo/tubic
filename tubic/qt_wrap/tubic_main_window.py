@@ -1,7 +1,4 @@
-from concurrent.futures import thread
 import PyQt6.QtWidgets as qtw
-import PyQt6.QtGui as qtg
-import PyQt6.QtCore as qtc
 
 from tubic.qt_wrap.py.main_window import MainWindowBase
 from tubic.qt_wrap.workers import DownloadVideoWorker, DownloadThumbnailWorker
@@ -15,11 +12,13 @@ class MainWindow(MainWindowBase):
         self.yt_link_wrap: LinkWrapper = LinkWrapper.get_dummy()
 
         self.pb_download_video.clicked.connect(
-            lambda: self.try_download(self.yt_link_wrap, hide=self.pb_download_video)
+            lambda: self.try_download(
+                self.yt_link_wrap.format_sort(["res:720"]), hide=self.pb_download_video
+            )
         )
         self.pb_download_audio.clicked.connect(
             lambda: self.try_download(
-                self.yt_link_wrap.audio(), hide=self.pb_download_audio
+                self.yt_link_wrap.mp3(), hide=self.pb_download_audio
             )
         )
         self.pb_abort_download.clicked.connect(self.abort_one_worker)

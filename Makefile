@@ -30,6 +30,7 @@ build: pyui
 	    --name $(PACKAGE_NAME) \
 	    --icon ../$(PACKAGE_NAME)/rec/ico/file-video.ico \
 	    --add-data ../$(PACKAGE_NAME)/rec/ico/*$(PATH_ARG_SEP)./$(PACKAGE_NAME)/rec/ico \
+		--add-data ../$(PACKAGE_NAME)/thirdparty/ffmpeg/bin/*$(PATH_ARG_SEP)./$(PACKAGE_NAME)/thirdparty/ffmpeg/bin \
 		$(PACKAGE_NAME)/__main__.py
 
 run:

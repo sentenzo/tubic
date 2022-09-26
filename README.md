@@ -1,22 +1,23 @@
 
 
-# tubic
+<h1>tubic</h1>
 <div align="center">
 
 ![Screenshot](tubic.webp)
 
 </div>
-A simple lightweight portable single-file program to download videos from YouTube.
+
+A simple lightweight portable single-file program to download video or audio (as `.mp3`) from YouTube.
 
 ---
 
 - [Installation](#installation)
 - [Backstory](#backstory)
 - [Building](#building)
-    - [Software requirements](#software-requirements)
-    - [First run](#first-run)
-    - [GUI editing](#gui-editing)
-    - [Basic `make` targets](#basic-make-targets)
+  - [Software requirements](#software-requirements)
+  - [First run](#first-run)
+  - [GUI editing](#gui-editing)
+  - [Basic `make` targets](#basic-make-targets)
 - [Licensing](#licensing)
 
 ## Installation
@@ -45,13 +46,13 @@ I've been trying out several tools of that kind, and each one of them had some f
 
 I feel an unfulfilled demand for a very simple tool, which would:
 - -be able to download both video and audio by a YouTube link
+- -download audios as `.mp3`-files
 - -have a simple GUI (the less buttons — the better)
 - -be portable (ideally: packed in a single executable)
 
 The features I (subjectively) consider redundant:
 - sequential download from a list of links
 - post-processing (`video: 1080p → 780p` or `audio: 320 kbps → 96 kbps`)
-- converting formats (`mp4 → mkv` or `webm → mp3`) 
 
 So that's how I've decided to make this stuff.
 
@@ -100,3 +101,4 @@ Qt Designer related files can be found at `tubic/qt_wrap/ui`.
 
 - Current repository is licensed under [MIT License](https://github.com/sentenzo/tubic/blob/master/LICENSE)
 - The icons for this application were taken from paomedia's [small-n-flat](https://github.com/paomedia/small-n-flat) set and licensed under [CC0 1.0 Universal](https://github.com/paomedia/small-n-flat/blob/master/LICENSE)
+- [ffmpeg](https://github.com/FFmpeg/FFmpeg) is licensed under a [mixed license](https://github.com/FFmpeg/FFmpeg/blob/master/LICENSE.md), compatible with MIT License

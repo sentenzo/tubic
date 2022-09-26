@@ -1,5 +1,4 @@
 from __future__ import annotations
-from genericpath import isdir
 import re
 from typing import Any, Callable
 import urllib.request as ur
@@ -8,6 +7,7 @@ import os
 from yt_dlp import YoutubeDL
 
 from tubic.yt_dlp_wrap.config import *
+from tubic.thirdparty.ffmpeg import ffmpeg
 
 
 class InvalidYoutubeLinkFormat(ValueError):
@@ -135,6 +135,23 @@ class LinkWrapper(BaseLinkWrapper):
         """
         return self._merge_ydl_params({"format": "bestaudio"})
 
+    def format_sort(self, query: list[str]) -> LinkWrapper:
+        return self._merge_ydl_params({"format_sort": query})
+
+    def mp3(self, bitrate=128) -> LinkWrapper:
+        params = {
+            "format": "bestaudio",
+            "ffmpeg_location": ffmpeg.location,
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": bitrate,
+                }
+            ],
+        }
+        return self._merge_ydl_params(params)
+
     def to(self, download_dir: str) -> LinkWrapper:
         """
         Allows doing:
@@ -147,13 +164,18 @@ class LinkWrapper(BaseLinkWrapper):
                 f'Trying to set ydl_params["paths"]["home"]: "{download_dir}" - is not a directory'
             )
 
-    def progress_hook(
-        self,
-        progress_hook: Callable,
-    ) -> LinkWrapper:
+    def progress_hook(self, progress_hook: Callable) -> LinkWrapper:
         ydl_params = self.ydl_params or {}
         if "progress_hooks" in ydl_params:
             ydl_params["progress_hooks"].append(progress_hook)
         else:
             ydl_params["progress_hooks"] = [progress_hook]
+        return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
+
+    def postprocessor_hook(self, postprocessor_hook: Callable) -> LinkWrapper:
+        ydl_params = self.ydl_params or {}
+        if "postprocessor_hooks" in ydl_params:
+            ydl_params["postprocessor_hooks"].append(postprocessor_hook)
+        else:
+            ydl_params["postprocessor_hooks"] = [postprocessor_hook]
         return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)

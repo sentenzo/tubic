@@ -3,7 +3,19 @@ import PyQt6.QtGui as qtg
 import PyQt6.QtCore as qtc
 
 from tubic.qt_wrap.pyui.main_window import Ui_MainWindow
-import tubic.qt_wrap.helpers as helpers
+
+from tubic.utils import fix_path
+
+
+def _getWindowIcon() -> qtg.QIcon:
+    rec_file = fix_path("tubic/rec/ico/file-video-{0}.png")
+    app_icon = qtg.QIcon()
+    app_icon.addFile(rec_file.format(24), qtc.QSize(24, 24))
+    app_icon.addFile(rec_file.format(48), qtc.QSize(48, 48))
+    app_icon.addFile(rec_file.format(72), qtc.QSize(72, 72))
+    app_icon.addFile(rec_file.format(96), qtc.QSize(96, 96))
+
+    return app_icon
 
 
 class MainWindowBase(qtw.QMainWindow):
@@ -17,7 +29,7 @@ class MainWindowBase(qtw.QMainWindow):
         Ui_MainWindow().setupUi(self)
         self.setFocus()
         self.setFixedSize(self.size())
-        self.setWindowIcon(helpers.getWindowIcon())
+        self.setWindowIcon(_getWindowIcon())
 
         self.status_line_descriptor = (
             "-" * 11

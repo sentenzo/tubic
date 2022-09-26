@@ -1,4 +1,3 @@
-# from abc import ABC, abstractmethod
 import PyQt6.QtCore as qtc
 import PyQt6.QtGui as qtg
 
@@ -64,6 +63,12 @@ class DownloadVideoWorker(Worker):
 
     @classmethod
     def create_thread(cls, window: MainWindowBase, link_wrap_obj: LinkWrapper):
+        def abortion_check(status_line: str):
+            if window._abort_one_worker:
+                window._abort_one_worker = False
+                window.set_status_line(status_line)
+                raise WorkerAborted(status_line)
+
         def progress_bar_pseudo_graphic(value: int, total: int) -> str:
             pb_str_len = 30  # the length of the pseudo graphic progress bar
             full, empty = "■", "□"
@@ -73,12 +78,8 @@ class DownloadVideoWorker(Worker):
             empty_count = pb_str_len - full_count
             return full * full_count + empty * empty_count
 
-        def progress_hook(msg):
-            nonlocal window
-            if window._abort_one_worker:
-                window._abort_one_worker = False
-                window.set_status_line(f"download was aborted")
-                raise WorkerAborted("Download was aborted")
+        def p_hook(msg):
+            abortion_check("download was aborted")
             status = msg["status"]
             if status == "downloading":
                 downloaded = msg["downloaded_bytes"]
@@ -92,7 +93,20 @@ class DownloadVideoWorker(Worker):
                 pbpg = progress_bar_pseudo_graphic(100, 100)
                 window.set_status_line(f"finished - {pbpg} - 100.00%")
 
-        link_wrap_obj = link_wrap_obj.progress_hook(progress_hook)
+        def pp_hook(msg):
+            abortion_check("post-processing was aborted")
+            status = msg["status"]
+            postprocessor = msg["postprocessor"]
+            status_lines = {
+                ("started", "ExtractAudio"): "extracting audio",
+                ("started", "MoveFiles"): "moving files",
+                ("finished", "MoveFiles"): "finished",
+            }
+            status_line = status_lines.get((status, postprocessor), None)
+            if status_line:
+                window.set_status_line(status_line)
+
+        link_wrap_obj = link_wrap_obj.progress_hook(p_hook).postprocessor_hook(pp_hook)
 
         thread = super().create_thread(window, link_wrap_obj)
         return thread
