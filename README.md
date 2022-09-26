@@ -17,7 +17,7 @@ A simple lightweight portable single-file program to download video or audio (as
   - [Software requirements](#software-requirements)
   - [First run](#first-run)
   - [GUI editing](#gui-editing)
-  - [Basic `make` targets](#basic-make-targets)
+  - [Regular `make` targets](#basic-make-targets)
 - [Licensing](#licensing)
 
 ## Installation
@@ -27,6 +27,9 @@ A simple lightweight portable single-file program to download video or audio (as
 2. Run the executable
 
 ## Backstory
+
+<details close=""><summary> <h4>Why making another YouTube downloader? Click here if you want to look over my 300 words long justification</h4></summary>
+
 
 Why making another YouTube downloader, when we already have `%YOUR_FAVORITE_APP_NAME%`, which is a lot better, than this stuff will ever be?
 
@@ -64,6 +67,8 @@ The application is packed in a single executable file with no dependencies (than
 
 The target OS is currently Windows ≥ 10. Though, there's no OS-dependent features or libs used, so you're free to try and build it on Linux.
 
+</details>
+
 ## Building
 
 ### Software requirements
@@ -79,20 +84,13 @@ The target OS is currently Windows ≥ 10. Though, there's no OS-dependent featu
     - the [official site](https://www.qt.io/) — ironicaly, not the best way, cause it is not distributed separately from all the over Qt tools and requires registration
 
 ### First run
-In the project directory execute:
-
-```bash
-poetry install
-```
-\- to download all the Python packages required. 
-
-That's all.
+In the project directory execute `make install`.
 
 ### GUI editing
 
 Qt Designer related files can be found at `tubic/qt_wrap/ui`.
 
-### Basic `make` targets
+### Regular `make` targets
 - `make test` — run unit tests
 - `make runpy` — run app with Python
 - `make build` — create an executable in a `bin` folder
