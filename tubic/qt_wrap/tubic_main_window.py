@@ -15,7 +15,9 @@ class MainWindow(MainWindowBase):
         self.yt_link_wrap: LinkWrapper = LinkWrapper.get_dummy()
 
         self.pb_download_video.clicked.connect(
-            lambda: self.try_download(self.yt_link_wrap, hide=self.pb_download_video)
+            lambda: self.try_download(
+                self.yt_link_wrap.format_sort(["res:720"]), hide=self.pb_download_video
+            )
         )
         self.pb_download_audio.clicked.connect(
             lambda: self.try_download(

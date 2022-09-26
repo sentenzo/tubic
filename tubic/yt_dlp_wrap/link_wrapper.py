@@ -135,6 +135,9 @@ class LinkWrapper(BaseLinkWrapper):
         """
         return self._merge_ydl_params({"format": "bestaudio"})
 
+    def format_sort(self, query: list[str]) -> LinkWrapper:
+        return self._merge_ydl_params({"format_sort": query})
+
     def mp3(self, bitrate=128) -> LinkWrapper:
         params = {
             "format": "bestaudio",
