@@ -15,6 +15,9 @@ PACKAGE_NAME = tubic
 
 all: build
 
+install:
+	poetry install
+
 pyui:
 	poetry run python -m PyQt6.uic.pyuic \
 	    -o ./$(PACKAGE_NAME)/qt_wrap/pyui/main_window.py \
