@@ -17,7 +17,7 @@ A simple lightweight portable single-file program to download video or audio (as
   - [Software requirements](#software-requirements)
   - [First run](#first-run)
   - [GUI editing](#gui-editing)
-  - [Regular `make` targets](#basic-make-targets)
+  - [Regular `make` targets](#regular-make-targets)
 - [Licensing](#licensing)
 
 ## Installation
