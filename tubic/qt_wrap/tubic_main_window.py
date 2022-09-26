@@ -1,7 +1,4 @@
-from concurrent.futures import thread
 import PyQt6.QtWidgets as qtw
-import PyQt6.QtGui as qtg
-import PyQt6.QtCore as qtc
 
 from tubic.qt_wrap.py.main_window import MainWindowBase
 from tubic.qt_wrap.workers import DownloadVideoWorker, DownloadThumbnailWorker

@@ -1,4 +1,3 @@
-# from abc import ABC, abstractmethod
 import PyQt6.QtCore as qtc
 import PyQt6.QtGui as qtg
 
