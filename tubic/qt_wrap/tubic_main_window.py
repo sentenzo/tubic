@@ -3,6 +3,7 @@ import PyQt6.QtWidgets as qtw
 from tubic.qt_wrap.py.main_window import MainWindowBase
 from tubic.qt_wrap.workers import DownloadVideoWorker, DownloadThumbnailWorker
 from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
+from tubic.config import SETTINGS, save_settings
 
 
 class MainWindow(MainWindowBase):
@@ -13,12 +14,12 @@ class MainWindow(MainWindowBase):
 
         self.pb_download_video.clicked.connect(
             lambda: self.try_download(
-                self.yt_link_wrap.format_sort(["res:720"]), hide=self.pb_download_video
+                self.yt_link_wrap.preset_video(), hide=self.pb_download_video
             )
         )
         self.pb_download_audio.clicked.connect(
             lambda: self.try_download(
-                self.yt_link_wrap.mp3(), hide=self.pb_download_audio
+                self.yt_link_wrap.preset_audio(), hide=self.pb_download_audio
             )
         )
         self.pb_abort_download.clicked.connect(self.abort_one_worker)
@@ -27,9 +28,18 @@ class MainWindow(MainWindowBase):
     def try_download(
         self, yt_link_wrap_obj: LinkWrapper, hide: qtw.QWidget | None = None
     ):
-        download_folder = qtw.QFileDialog.getExistingDirectory(self, "Select Directory")
+        prev_download_folder = ""
+        section = "AUDIO" if hide == self.pb_download_audio else "VIDEO"
+        prev_download_folder = SETTINGS[section].get("download_folder", ".")
+        download_folder = qtw.QFileDialog.getExistingDirectory(
+            self,
+            f"Select directory to download {section.lower()}",
+            directory=prev_download_folder,
+        )
         if download_folder:
             yt_link_wrap_obj = yt_link_wrap_obj.to(download_folder)
+            SETTINGS[section]["download_folder"] = download_folder
+            save_settings(SETTINGS)
         else:
             return
 

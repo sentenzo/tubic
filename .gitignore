@@ -5,6 +5,7 @@ __pycache__
 .venv_linux
 .venv_windows
 /bin
+*.lnk
 
 .pyinstaller
 

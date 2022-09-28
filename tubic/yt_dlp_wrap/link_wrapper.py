@@ -8,6 +8,7 @@ from yt_dlp import YoutubeDL
 
 from tubic.yt_dlp_wrap.config import *
 from tubic.thirdparty.ffmpeg import ffmpeg
+from tubic.config import SETTINGS, save_settings
 
 
 class InvalidYoutubeLinkFormat(ValueError):
@@ -138,7 +139,7 @@ class LinkWrapper(BaseLinkWrapper):
     def format_sort(self, query: list[str]) -> LinkWrapper:
         return self._merge_ydl_params({"format_sort": query})
 
-    def mp3(self, bitrate=128) -> LinkWrapper:
+    def mp3(self, bitrate=96) -> LinkWrapper:
         params = {
             "format": "bestaudio",
             "ffmpeg_location": ffmpeg.location,
@@ -179,3 +180,15 @@ class LinkWrapper(BaseLinkWrapper):
         else:
             ydl_params["postprocessor_hooks"] = [postprocessor_hook]
         return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
+
+    def preset_video(self) -> LinkWrapper:
+        if SETTINGS["VIDEO"].get("max_resolution", ""):
+            res = int(SETTINGS["VIDEO"]["max_resolution"])
+            return self.format_sort([f"res:{res}"])
+        return self
+
+    def preset_audio(self) -> LinkWrapper:
+        if SETTINGS["AUDIO"].getboolean("convert_to_mp3", False) == True:
+            br = SETTINGS["AUDIO"].getint("mp3_bitrate", 96)
+            return self.mp3(br)
+        return self.audio()
