@@ -22,6 +22,9 @@ pyui:
 	poetry run python -m PyQt6.uic.pyuic \
 	    -o ./$(PACKAGE_NAME)/qt_wrap/pyui/main_window.py \
 	    -x ./$(PACKAGE_NAME)/qt_wrap/ui/main_window.ui
+	poetry run python -m PyQt6.uic.pyuic \
+	    -o ./$(PACKAGE_NAME)/qt_wrap/pyui/settings_window.py \
+	    -x ./$(PACKAGE_NAME)/qt_wrap/ui/settings_window.ui
 
 build: pyui
 	poetry run pyinstaller \

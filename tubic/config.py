@@ -4,7 +4,7 @@ import configparser
 
 default_settings = {
     "GENERAL": {
-        "always_ask_to_conform_destination_folder": "False",
+        "always_ask_to_conform_the_destination_folder": "True",
         "import_cookies_from": "",  # firefox, opera, ...
     },
     "VIDEO": {
