@@ -6,10 +6,15 @@ import os
 
 from yt_dlp import YoutubeDL
 
-from tubic.yt_dlp_wrap.config import *
+from tubic.yt_dlp_wrap import (
+    YOUTUBE_RE_LINK,
+    YOUTUBE_RE_VIDEO_ID,
+    YOUTUBE_LINK_TEMPLATE,
+    YOUTUBE_DUMMY_LINK,
+)
 from tubic.thirdparty.ffmpeg import ffmpeg
 from tubic.config import SETTINGS, save_settings
-from tubic.utils import parse_int_with_suffix
+from tubic.misc import parse_int_with_suffix
 
 
 class InvalidYoutubeLinkFormat(ValueError):

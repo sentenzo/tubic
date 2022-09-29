@@ -7,6 +7,7 @@ from tubic.config import (
     get_settings_by_path,
     set_settings_by_path,
 )
+from tubic.qt_wrap.misc import run_directory_dialog
 
 
 class SettingsWindow(SettingsWindowBase):
@@ -59,10 +60,31 @@ class SettingsWindow(SettingsWindowBase):
         except Exception as ex:
             return False
 
+    def choose_folder_slot(self, le_control: qtw.QLineEdit, title: str):
+        def _():
+            init_path = le_control.text()
+            new_path = run_directory_dialog(self, title, init_path)
+            le_control.setText(new_path)
+
+        return _
+
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
 
         self.pb_apply.clicked.connect(lambda: self.save_settings() and self.close())
         self.pb_cancel.clicked.connect(self.close)
+
+        self.pb_change_video_download_folder.clicked.connect(
+            self.choose_folder_slot(
+                self.le_video_download_folder,
+                "Choose default folder to download video files",
+            )
+        )
+        self.pb_change_audio_download_folder.clicked.connect(
+            self.choose_folder_slot(
+                self.le_audio_download_folder,
+                "Choose default folder to download audio files",
+            )
+        )
 
         self.load_settings()

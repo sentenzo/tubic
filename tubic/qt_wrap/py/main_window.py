@@ -4,16 +4,8 @@ import PyQt6.QtCore as qtc
 
 from tubic.qt_wrap.pyui.main_window import Ui_MainWindow
 
-from tubic.utils import fix_path
-
-
-def _getIcon(title: str, sizes: list[int]) -> qtg.QIcon:
-    path = f"tubic/rec/ico/{title}-" + "{0}.png"
-    rec_file = fix_path(path)
-    app_icon = qtg.QIcon()
-    for size in sizes:
-        app_icon.addFile(rec_file.format(size), qtc.QSize(size, size))
-    return app_icon
+from tubic.misc import fix_path
+from tubic.qt_wrap.misc import get_icon
 
 
 class MainWindowBase(qtw.QMainWindow):
@@ -27,7 +19,7 @@ class MainWindowBase(qtw.QMainWindow):
         Ui_MainWindow().setupUi(self)
         self.setFocus()
         self.setFixedSize(self.size())
-        self.setWindowIcon(_getIcon("file-video", [24, 48, 72, 96]))
+        self.setWindowIcon(get_icon("file-video", [24, 48, 72, 96]))
 
         self.status_line_descriptor = (
             "-" * 11
@@ -50,7 +42,7 @@ class MainWindowBase(qtw.QMainWindow):
         self.l_status: qtw.QLabel = _f(qtw.QLabel, "l_status")
 
         self.pb_settings: qtw.QPushButton = _f(qtw.QPushButton, "pb_settings")
-        self.pb_settings.setIcon(_getIcon("cog", [24]))
+        self.pb_settings.setIcon(get_icon("cog", [24]))
 
         self.thread_pool: set[qtc.QThread] = set()
         self._abort_one_worker = False
