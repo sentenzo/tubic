@@ -191,7 +191,7 @@
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="styleSheet">
-         <string notr="true">border-radius: 1px;</string>
+         <string notr="true">border: 0px solid transparent;</string>
         </property>
         <property name="text">
          <string/>

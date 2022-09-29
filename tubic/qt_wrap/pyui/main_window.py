@@ -93,7 +93,7 @@ class Ui_MainWindow(object):
         self.pb_settings = QtWidgets.QPushButton(self.centralwidget)
         self.pb_settings.setMinimumSize(QtCore.QSize(24, 24))
         self.pb_settings.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
-        self.pb_settings.setStyleSheet("border-radius: 1px;")
+        self.pb_settings.setStyleSheet("border: 0px solid transparent;")
         self.pb_settings.setText("")
         self.pb_settings.setIconSize(QtCore.QSize(24, 24))
         self.pb_settings.setObjectName("pb_settings")

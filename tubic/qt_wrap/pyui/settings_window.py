@@ -140,16 +140,17 @@ class Ui_Settings(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem7)
-        self.pushButton_2 = QtWidgets.QPushButton(Settings)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.horizontalLayout.addWidget(self.pushButton_2)
-        self.pushButton = QtWidgets.QPushButton(Settings)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.pb_apply = QtWidgets.QPushButton(Settings)
+        self.pb_apply.setObjectName("pb_apply")
+        self.horizontalLayout.addWidget(self.pb_apply)
+        self.pb_cancel = QtWidgets.QPushButton(Settings)
+        self.pb_cancel.setObjectName("pb_cancel")
+        self.horizontalLayout.addWidget(self.pb_cancel)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
 
         self.retranslateUi(Settings)
         self.tabWidget.setCurrentIndex(0)
+        self.cb_max_video_resolution.setCurrentIndex(3)
         self.cb_mp3_bitrate.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(Settings)
 
@@ -184,8 +185,8 @@ class Ui_Settings(object):
         self.cb_mp3_bitrate.setItemText(3, _translate("Settings", "192 kbps"))
         self.cb_mp3_bitrate.setItemText(4, _translate("Settings", "256 kbps"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("Settings", "Audio"))
-        self.pushButton_2.setText(_translate("Settings", "Apply"))
-        self.pushButton.setText(_translate("Settings", "Cancel"))
+        self.pb_apply.setText(_translate("Settings", "Apply"))
+        self.pb_cancel.setText(_translate("Settings", "Cancel"))
 
 
 if __name__ == "__main__":

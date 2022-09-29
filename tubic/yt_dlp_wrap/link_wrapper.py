@@ -9,6 +9,7 @@ from yt_dlp import YoutubeDL
 from tubic.yt_dlp_wrap.config import *
 from tubic.thirdparty.ffmpeg import ffmpeg
 from tubic.config import SETTINGS, save_settings
+from tubic.utils import parse_int_with_suffix
 
 
 class InvalidYoutubeLinkFormat(ValueError):
@@ -183,12 +184,12 @@ class LinkWrapper(BaseLinkWrapper):
 
     def preset_video(self) -> LinkWrapper:
         if SETTINGS["VIDEO"].get("max_resolution", ""):
-            res = int(SETTINGS["VIDEO"]["max_resolution"])
+            res = parse_int_with_suffix(SETTINGS["VIDEO"]["max_resolution"], 720)
             return self.format_sort([f"res:{res}"])
         return self
 
     def preset_audio(self) -> LinkWrapper:
         if SETTINGS["AUDIO"].getboolean("convert_to_mp3", False) == True:
-            br = SETTINGS["AUDIO"].getint("mp3_bitrate", 96)
+            br = parse_int_with_suffix(SETTINGS["AUDIO"]["mp3_bitrate"], 96)
             return self.mp3(br)
         return self.audio()
