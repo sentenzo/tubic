@@ -187,14 +187,22 @@ class LinkWrapper(BaseLinkWrapper):
             ydl_params["postprocessor_hooks"] = [postprocessor_hook]
         return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
 
-    def preset_video(self) -> LinkWrapper:
-        if SETTINGS["VIDEO"].get("max_resolution", ""):
-            res = parse_int_with_suffix(SETTINGS["VIDEO"]["max_resolution"], 720)
-            return self.format_sort([f"res:{res}"])
+    def preset_general(self) -> LinkWrapper:
+        cookies_from = SETTINGS["GENERAL"].get("import_cookies_from", "nowhere")
+        if cookies_from in ("firefox", "chrome", "edge", "opera", "vivaldi"):
+            return self._merge_ydl_params({"cookiesfrombrowser": (cookies_from,)})
         return self
 
+    def preset_video(self) -> LinkWrapper:
+        myself = self.preset_general()
+        if SETTINGS["VIDEO"].get("max_resolution", ""):
+            res = parse_int_with_suffix(SETTINGS["VIDEO"]["max_resolution"], 720)
+            return myself.format_sort([f"res:{res}"])
+        return myself
+
     def preset_audio(self) -> LinkWrapper:
+        myself = self.preset_general()
         if SETTINGS["AUDIO"].getboolean("convert_to_mp3", False) == True:
             br = parse_int_with_suffix(SETTINGS["AUDIO"]["mp3_bitrate"], 96)
-            return self.mp3(br)
-        return self.audio()
+            return myself.mp3(br)
+        return myself.audio()
