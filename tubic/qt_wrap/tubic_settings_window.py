@@ -7,7 +7,7 @@ from tubic.config import (
     get_settings_by_path,
     set_settings_by_path,
 )
-from tubic.qt_wrap.misc import run_directory_dialog
+from tubic.qt_wrap.misc import choose_destination_folder
 
 
 class SettingsWindow(SettingsWindowBase):
@@ -63,7 +63,7 @@ class SettingsWindow(SettingsWindowBase):
     def choose_folder_slot(self, le_control: qtw.QLineEdit, title: str):
         def _():
             init_path = le_control.text()
-            new_path = run_directory_dialog(self, title, init_path)
+            new_path = choose_destination_folder(self, title, init_path)
             le_control.setText(new_path)
 
         return _
@@ -88,3 +88,8 @@ class SettingsWindow(SettingsWindowBase):
         )
 
         self.load_settings()
+
+        self.cb_mp3_bitrate.setEnabled(self.chb_to_mp3.isChecked())
+        self.chb_to_mp3.clicked.connect(
+            lambda: self.cb_mp3_bitrate.setEnabled(self.chb_to_mp3.isChecked())
+        )

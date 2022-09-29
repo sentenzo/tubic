@@ -28,3 +28,8 @@ class SettingsWindowBase(qtw.QDialog):
         self.le_audio_download_folder: qtw.QLineEdit = self.findChild(
             qtw.QLineEdit, "le_audio_download_folder"
         )
+
+        self.chb_to_mp3: qtw.QCheckBox = self.findChild(qtw.QCheckBox, "chb_to_mp3")
+        self.cb_mp3_bitrate: qtw.QComboBox = self.findChild(
+            qtw.QComboBox, "cb_mp3_bitrate"
+        )

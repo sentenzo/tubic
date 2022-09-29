@@ -16,9 +16,17 @@ def get_icon(title: str, sizes: list[int]) -> qtg.QIcon:
     return app_icon
 
 
-def run_directory_dialog(
-    parent: qtw.QWidget, title: str, init_path: str, default_init_path: str = "."
+def choose_destination_folder(
+    parent: qtw.QWidget,
+    title: str,
+    init_path: str,
+    default_init_path: str = ".",
+    silent: bool = False,
 ) -> qtw.QFileDialog:
-    if not os.path.isdir(init_path):
+    init_path_exists = os.path.isdir(init_path)
+    if silent:
+        if init_path_exists and init_path != default_init_path:
+            return init_path
+    elif not init_path_exists:
         init_path = default_init_path
     return qtw.QFileDialog.getExistingDirectory(parent, title, init_path)
