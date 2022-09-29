@@ -3,6 +3,7 @@ import PyQt6.QtWidgets as qtw
 from tubic.qt_wrap.py.main_window import MainWindowBase
 from tubic.qt_wrap.workers import DownloadVideoWorker, DownloadThumbnailWorker
 from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
+from tubic.qt_wrap.tubic_settings_window import SettingsWindow
 from tubic.config import SETTINGS, save_settings
 
 
@@ -24,6 +25,12 @@ class MainWindow(MainWindowBase):
         )
         self.pb_abort_download.clicked.connect(self.abort_one_worker)
         self.set_status_line("ready")
+
+        self.pb_settings.clicked.connect(self.show_settings)
+
+    def show_settings(self):
+        self.settings_window = SettingsWindow(self)
+        self.settings_window.show()
 
     def try_download(
         self, yt_link_wrap_obj: LinkWrapper, hide: qtw.QWidget | None = None

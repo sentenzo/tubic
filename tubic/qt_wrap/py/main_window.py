@@ -7,14 +7,12 @@ from tubic.qt_wrap.pyui.main_window import Ui_MainWindow
 from tubic.utils import fix_path
 
 
-def _getWindowIcon() -> qtg.QIcon:
-    rec_file = fix_path("tubic/rec/ico/file-video-{0}.png")
+def _getIcon(title: str, sizes: list[int]) -> qtg.QIcon:
+    path = f"tubic/rec/ico/{title}-" + "{0}.png"
+    rec_file = fix_path(path)
     app_icon = qtg.QIcon()
-    app_icon.addFile(rec_file.format(24), qtc.QSize(24, 24))
-    app_icon.addFile(rec_file.format(48), qtc.QSize(48, 48))
-    app_icon.addFile(rec_file.format(72), qtc.QSize(72, 72))
-    app_icon.addFile(rec_file.format(96), qtc.QSize(96, 96))
-
+    for size in sizes:
+        app_icon.addFile(rec_file.format(size), qtc.QSize(size, size))
     return app_icon
 
 
@@ -29,7 +27,7 @@ class MainWindowBase(qtw.QMainWindow):
         Ui_MainWindow().setupUi(self)
         self.setFocus()
         self.setFixedSize(self.size())
-        self.setWindowIcon(_getWindowIcon())
+        self.setWindowIcon(_getIcon("file-video", [24, 48, 72, 96]))
 
         self.status_line_descriptor = (
             "-" * 11
@@ -51,6 +49,9 @@ class MainWindowBase(qtw.QMainWindow):
         self.l_thumbnail: qtw.QLabel = _f(qtw.QLabel, "l_thumbnail")
         self.l_status: qtw.QLabel = _f(qtw.QLabel, "l_status")
 
+        self.pb_settings: qtw.QPushButton = _f(qtw.QPushButton, "pb_settings")
+        self.pb_settings.setIcon(_getIcon("cog", [24]))
+
         self.thread_pool: set[qtc.QThread] = set()
         self._abort_one_worker = False
 
@@ -58,6 +59,7 @@ class MainWindowBase(qtw.QMainWindow):
         self.pb_download_video.setEnabled(locked == False)
         self.pb_download_audio.setEnabled(locked == False)
         self.le_youtube_link.setEnabled(locked == False)
+        self.pb_settings.setEnabled(locked == False)
 
         cursor = qtg.QCursor(qtc.Qt.CursorShape.ArrowCursor)
         if locked:
