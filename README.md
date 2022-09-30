@@ -65,7 +65,7 @@ The UI is implemented with [PyQt6](https://pypi.org/project/PyQt6/).
 
 The application is packed in a single executable file with no dependencies (thanks to [pyinstaller](https://pypi.org/project/pyinstaller/)).
 
-The target OS is currently Windows ≥ 10. Though, there's no OS-dependent features or libs used, so you're free to try and build it on Linux.
+The target OS is currently Windows ≥ 10. Though, there's no OS-dependent features or libs used, so you're free to try and build it on Linux. And of course you'll have to replace the `ffmpeg.exe` binary.
 
 </details>
 
