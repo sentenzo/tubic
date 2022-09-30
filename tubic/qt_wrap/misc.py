@@ -5,6 +5,7 @@ import PyQt6.QtGui as qtg
 import PyQt6.QtCore as qtc
 
 from tubic.misc import fix_path
+from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
 
 
 def get_icon(title: str, sizes: list[int]) -> qtg.QIcon:
@@ -30,3 +31,13 @@ def choose_destination_folder(
     elif not init_path_exists:
         init_path = default_init_path
     return qtw.QFileDialog.getExistingDirectory(parent, title, init_path)
+
+
+def try_get_youtube_link_from_cb():
+    maybe_youtube_link: str = qtw.QApplication.clipboard().text()
+    new_yt_link_wrap = None
+    try:
+        new_yt_link_wrap = LinkWrapper(youtube_link=maybe_youtube_link)
+        return new_yt_link_wrap.video_url
+    except InvalidYoutubeLinkFormat as ex:
+        return None
