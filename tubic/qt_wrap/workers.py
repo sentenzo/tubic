@@ -91,7 +91,7 @@ class DownloadVideoWorker(Worker):
                 percent = 100 * downloaded / total
 
                 pbpg = progress_bar_pseudo_graphic(downloaded, total)
-                window.set_status_line(f"working  - {pbpg} - {percent:05.2f}%")
+                window.set_status_line(f"working {pbpg} - {percent:05.2f}%")
             elif status == "finished":
                 pbpg = progress_bar_pseudo_graphic(100, 100)
                 window.set_status_line(finish_message)
