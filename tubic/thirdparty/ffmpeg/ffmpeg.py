@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-from tubic.utils import fix_path
+from tubic.misc import fix_path
 
 location = fix_path("tubic/thirdparty/ffmpeg/bin/ffmpeg.exe")
 

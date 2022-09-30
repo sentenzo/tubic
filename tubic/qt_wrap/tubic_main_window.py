@@ -3,6 +3,9 @@ import PyQt6.QtWidgets as qtw
 from tubic.qt_wrap.py.main_window import MainWindowBase
 from tubic.qt_wrap.workers import DownloadVideoWorker, DownloadThumbnailWorker
 from tubic.yt_dlp_wrap.link_wrapper import LinkWrapper, InvalidYoutubeLinkFormat
+from tubic.qt_wrap.tubic_settings_window import SettingsWindow
+from tubic.config import SETTINGS, save_settings
+from tubic.qt_wrap.misc import choose_destination_folder, try_get_youtube_link_from_cb
 
 
 class MainWindow(MainWindowBase):
@@ -13,25 +16,45 @@ class MainWindow(MainWindowBase):
 
         self.pb_download_video.clicked.connect(
             lambda: self.try_download(
-                self.yt_link_wrap.format_sort(["res:720"]), hide=self.pb_download_video
+                self.yt_link_wrap.preset_video(), hide=self.pb_download_video
             )
         )
         self.pb_download_audio.clicked.connect(
             lambda: self.try_download(
-                self.yt_link_wrap.mp3(), hide=self.pb_download_audio
+                self.yt_link_wrap.preset_audio(), hide=self.pb_download_audio
             )
         )
         self.pb_abort_download.clicked.connect(self.abort_one_worker)
         self.set_status_line("ready")
 
+        self.pb_settings.clicked.connect(self.show_settings)
+
+        self.le_youtube_link.cursorPositionChanged.connect(self.youtube_link_click_slot)
+
+    def show_settings(self):
+        self.settings_window = SettingsWindow(self)
+        self.settings_window.show()
+
     def try_download(
         self, yt_link_wrap_obj: LinkWrapper, hide: qtw.QWidget | None = None
     ):
-        download_folder = qtw.QFileDialog.getExistingDirectory(self, "Select Directory")
+        section = "AUDIO" if hide == self.pb_download_audio else "VIDEO"
+        download_folder = choose_destination_folder(
+            self,
+            f"Select directory to download {section.lower()}",
+            SETTINGS[section].get("download_folder", "."),
+            silent=not SETTINGS["GENERAL"].getboolean(
+                "always_ask_to_conform_the_destination_folder", True
+            ),
+        )
         if download_folder:
             yt_link_wrap_obj = yt_link_wrap_obj.to(download_folder)
+            SETTINGS[section]["download_folder"] = download_folder
+            save_settings(SETTINGS)
         else:
             return
+
+        self.activate_download_folder(download_folder, section.lower())
 
         self.set_status_line("preparations")
 
@@ -43,27 +66,39 @@ class MainWindow(MainWindowBase):
                 lambda: [
                     hide.setVisible(True),
                     self.pb_abort_download.setVisible(False),
-                ]  # a hack to run two lines in a lambda
+                ]  # a hack to run multiple lines in a lambda
             )
         thread.start()
 
+    def _set_youtube_link(self, youtube_link: str):
+        self.yt_link_wrap = LinkWrapper(youtube_link=youtube_link)
+        self.le_youtube_link.setText(youtube_link)
+
+        self.set_status_line("fetching thumbnail")
+        thread = DownloadThumbnailWorker.create_thread(self, self.yt_link_wrap)
+        thread.start()
+
     def focusInEvent(self, event) -> None:
-        youtube_link: str = qtw.QApplication.clipboard().text()
-        new_yt_link_wrap = None
-        try:
-            new_yt_link_wrap = LinkWrapper(youtube_link=youtube_link)
-        except InvalidYoutubeLinkFormat as ex:
+        youtube_link: str = try_get_youtube_link_from_cb()
+        if not youtube_link:
             return
         if (
-            new_yt_link_wrap.video_id == self.yt_link_wrap.video_id
+            self.yt_link_wrap.video_url == youtube_link
             and self.pb_download_video.isEnabled()
         ):
             # the user trys to replace with the same link, so ...
             return  # ... my job here is done!
-        self.le_youtube_link.setText(new_yt_link_wrap.video_url)
-        self.yt_link_wrap = new_yt_link_wrap
+        self._set_youtube_link(youtube_link)
 
-        self.set_status_line("fetching thumbnail")
-
-        thread = DownloadThumbnailWorker.create_thread(self, self.yt_link_wrap)
-        thread.start()
+    def youtube_link_click_slot(self) -> None:
+        new_yt_link: str | None = try_get_youtube_link_from_cb()
+        old_yt_link: str | None = self.le_youtube_link.text()
+        if new_yt_link == old_yt_link:
+            self.set_status_line("ready")
+        elif new_yt_link or not old_yt_link:
+            self._set_youtube_link(new_yt_link)
+            self.set_status_line("ready")
+        elif old_yt_link:
+            qtw.QApplication.clipboard().setText(old_yt_link)
+            self.le_youtube_link.selectAll()
+            self.set_status_line(f"{old_yt_link} - copied to clipboard")

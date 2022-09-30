@@ -78,6 +78,9 @@ class DownloadVideoWorker(Worker):
             empty_count = pb_str_len - full_count
             return full * full_count + empty * empty_count
 
+        # the arrow is pointing to the "Open download folder" icon-button
+        finish_message = "finished            --------------->"
+
         def p_hook(msg):
             abortion_check("download was aborted")
             status = msg["status"]
@@ -88,10 +91,10 @@ class DownloadVideoWorker(Worker):
                 percent = 100 * downloaded / total
 
                 pbpg = progress_bar_pseudo_graphic(downloaded, total)
-                window.set_status_line(f"working  - {pbpg} - {percent:05.2f}%")
+                window.set_status_line(f"working {pbpg} - {percent:05.2f}%")
             elif status == "finished":
                 pbpg = progress_bar_pseudo_graphic(100, 100)
-                window.set_status_line(f"finished - {pbpg} - 100.00%")
+                window.set_status_line(finish_message)
 
         def pp_hook(msg):
             abortion_check("post-processing was aborted")
@@ -100,7 +103,7 @@ class DownloadVideoWorker(Worker):
             status_lines = {
                 ("started", "ExtractAudio"): "extracting audio",
                 ("started", "MoveFiles"): "moving files",
-                ("finished", "MoveFiles"): "finished",
+                ("finished", "MoveFiles"): finish_message,
             }
             status_line = status_lines.get((status, postprocessor), None)
             if status_line:

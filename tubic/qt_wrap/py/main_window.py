@@ -4,18 +4,7 @@ import PyQt6.QtCore as qtc
 
 from tubic.qt_wrap.pyui.main_window import Ui_MainWindow
 
-from tubic.utils import fix_path
-
-
-def _getWindowIcon() -> qtg.QIcon:
-    rec_file = fix_path("tubic/rec/ico/file-video-{0}.png")
-    app_icon = qtg.QIcon()
-    app_icon.addFile(rec_file.format(24), qtc.QSize(24, 24))
-    app_icon.addFile(rec_file.format(48), qtc.QSize(48, 48))
-    app_icon.addFile(rec_file.format(72), qtc.QSize(72, 72))
-    app_icon.addFile(rec_file.format(96), qtc.QSize(96, 96))
-
-    return app_icon
+from tubic.qt_wrap.misc import get_icon, open_explorer
 
 
 class MainWindowBase(qtw.QMainWindow):
@@ -29,7 +18,7 @@ class MainWindowBase(qtw.QMainWindow):
         Ui_MainWindow().setupUi(self)
         self.setFocus()
         self.setFixedSize(self.size())
-        self.setWindowIcon(_getWindowIcon())
+        self.setWindowIcon(get_icon("file-video", [24, 48, 72, 96]))
 
         self.status_line_descriptor = (
             "-" * 11
@@ -51,6 +40,18 @@ class MainWindowBase(qtw.QMainWindow):
         self.l_thumbnail: qtw.QLabel = _f(qtw.QLabel, "l_thumbnail")
         self.l_status: qtw.QLabel = _f(qtw.QLabel, "l_status")
 
+        self.pb_settings: qtw.QPushButton = _f(qtw.QPushButton, "pb_settings")
+        self.pb_settings.setIcon(get_icon("cog", [24]))
+
+        self.pb_open_download_folder: qtw.QPushButton = _f(
+            qtw.QPushButton, "pb_open_download_folder"
+        )
+        self.pb_open_download_folder.setIcon(get_icon("folder-dim", [24]))
+        self._open_download_folder: str = ""
+        self.pb_open_download_folder.clicked.connect(
+            lambda: open_explorer(self._open_download_folder)
+        )
+
         self.thread_pool: set[qtc.QThread] = set()
         self._abort_one_worker = False
 
@@ -58,6 +59,7 @@ class MainWindowBase(qtw.QMainWindow):
         self.pb_download_video.setEnabled(locked == False)
         self.pb_download_audio.setEnabled(locked == False)
         self.le_youtube_link.setEnabled(locked == False)
+        self.pb_settings.setEnabled(locked == False)
 
         cursor = qtg.QCursor(qtc.Qt.CursorShape.ArrowCursor)
         if locked:
@@ -78,3 +80,19 @@ class MainWindowBase(qtw.QMainWindow):
 
     def abort_one_worker(self):
         self._abort_one_worker = True
+
+    def activate_download_folder(self, path: str, cathegory: str | None = None):
+        self._open_download_folder = path
+        ico = {"audio": "folder-music", "video": "folder-video"}.get(cathegory, None)
+        if ico:
+            self.pb_open_download_folder.setIcon(get_icon(ico, [24]))
+            self.pb_open_download_folder.setEnabled(True)
+            self.pb_open_download_folder.setCursor(
+                qtg.QCursor(qtc.Qt.CursorShape.PointingHandCursor)
+            )
+        else:
+            self.pb_open_download_folder.setIcon(get_icon("folder-dim", [24]))
+            self.pb_open_download_folder.setEnabled(False)
+            self.pb_open_download_folder.setCursor(
+                qtg.QCursor(qtc.Qt.CursorShape.ArrowCursor)
+            )

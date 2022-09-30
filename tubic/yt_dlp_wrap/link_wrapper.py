@@ -6,8 +6,15 @@ import os
 
 from yt_dlp import YoutubeDL
 
-from tubic.yt_dlp_wrap.config import *
+from tubic.yt_dlp_wrap import (
+    YOUTUBE_RE_LINK,
+    YOUTUBE_RE_VIDEO_ID,
+    YOUTUBE_LINK_TEMPLATE,
+    YOUTUBE_DUMMY_LINK,
+)
 from tubic.thirdparty.ffmpeg import ffmpeg
+from tubic.config import SETTINGS, save_settings
+from tubic.misc import parse_int_with_suffix
 
 
 class InvalidYoutubeLinkFormat(ValueError):
@@ -138,7 +145,7 @@ class LinkWrapper(BaseLinkWrapper):
     def format_sort(self, query: list[str]) -> LinkWrapper:
         return self._merge_ydl_params({"format_sort": query})
 
-    def mp3(self, bitrate=128) -> LinkWrapper:
+    def mp3(self, bitrate=96) -> LinkWrapper:
         params = {
             "format": "bestaudio",
             "ffmpeg_location": ffmpeg.location,
@@ -179,3 +186,23 @@ class LinkWrapper(BaseLinkWrapper):
         else:
             ydl_params["postprocessor_hooks"] = [postprocessor_hook]
         return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
+
+    def preset_general(self) -> LinkWrapper:
+        cookies_from = SETTINGS["GENERAL"].get("import_cookies_from", "nowhere")
+        if cookies_from in ("firefox", "chrome", "edge", "opera", "vivaldi"):
+            return self._merge_ydl_params({"cookiesfrombrowser": (cookies_from,)})
+        return self
+
+    def preset_video(self) -> LinkWrapper:
+        myself = self.preset_general()
+        if SETTINGS["VIDEO"].get("max_resolution", ""):
+            res = parse_int_with_suffix(SETTINGS["VIDEO"]["max_resolution"], 720)
+            return myself.format_sort([f"res:{res}"])
+        return myself
+
+    def preset_audio(self) -> LinkWrapper:
+        myself = self.preset_general()
+        if SETTINGS["AUDIO"].getboolean("convert_to_mp3", False) == True:
+            br = parse_int_with_suffix(SETTINGS["AUDIO"]["mp3_bitrate"], 96)
+            return myself.mp3(br)
+        return myself.audio()
