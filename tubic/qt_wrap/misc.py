@@ -41,3 +41,8 @@ def try_get_youtube_link_from_cb():
         return new_yt_link_wrap.video_url
     except InvalidYoutubeLinkFormat as ex:
         return None
+
+
+def open_explorer(path: str) -> bool:
+    fullpath = os.path.realpath(path)
+    return qtg.QDesktopServices.openUrl(qtc.QUrl.fromLocalFile(fullpath))

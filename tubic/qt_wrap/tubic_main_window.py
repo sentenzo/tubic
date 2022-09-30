@@ -54,6 +54,8 @@ class MainWindow(MainWindowBase):
         else:
             return
 
+        self.activate_download_folder(download_folder, section.lower())
+
         self.set_status_line("preparations")
 
         thread = DownloadVideoWorker.create_thread(self, yt_link_wrap_obj)
@@ -64,7 +66,7 @@ class MainWindow(MainWindowBase):
                 lambda: [
                     hide.setVisible(True),
                     self.pb_abort_download.setVisible(False),
-                ]  # a hack to run two lines in a lambda
+                ]  # a hack to run multiple lines in a lambda
             )
         thread.start()
 

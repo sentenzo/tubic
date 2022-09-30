@@ -4,8 +4,7 @@ import PyQt6.QtCore as qtc
 
 from tubic.qt_wrap.pyui.main_window import Ui_MainWindow
 
-from tubic.misc import fix_path
-from tubic.qt_wrap.misc import get_icon
+from tubic.qt_wrap.misc import get_icon, open_explorer
 
 
 class MainWindowBase(qtw.QMainWindow):
@@ -44,6 +43,15 @@ class MainWindowBase(qtw.QMainWindow):
         self.pb_settings: qtw.QPushButton = _f(qtw.QPushButton, "pb_settings")
         self.pb_settings.setIcon(get_icon("cog", [24]))
 
+        self.pb_open_download_folder: qtw.QPushButton = _f(
+            qtw.QPushButton, "pb_open_download_folder"
+        )
+        self.pb_open_download_folder.setIcon(get_icon("folder-dim", [24]))
+        self._open_download_folder: str = ""
+        self.pb_open_download_folder.clicked.connect(
+            lambda: open_explorer(self._open_download_folder)
+        )
+
         self.thread_pool: set[qtc.QThread] = set()
         self._abort_one_worker = False
 
@@ -72,3 +80,19 @@ class MainWindowBase(qtw.QMainWindow):
 
     def abort_one_worker(self):
         self._abort_one_worker = True
+
+    def activate_download_folder(self, path: str, cathegory: str | None = None):
+        self._open_download_folder = path
+        ico = {"audio": "folder-music", "video": "folder-video"}.get(cathegory, None)
+        if ico:
+            self.pb_open_download_folder.setIcon(get_icon(ico, [24]))
+            self.pb_open_download_folder.setEnabled(True)
+            self.pb_open_download_folder.setCursor(
+                qtg.QCursor(qtc.Qt.CursorShape.PointingHandCursor)
+            )
+        else:
+            self.pb_open_download_folder.setIcon(get_icon("folder-dim", [24]))
+            self.pb_open_download_folder.setEnabled(False)
+            self.pb_open_download_folder.setCursor(
+                qtg.QCursor(qtc.Qt.CursorShape.ArrowCursor)
+            )
