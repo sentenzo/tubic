@@ -18,16 +18,3 @@ def parse_int_with_suffix(int_with_suff: str, default: int = 0) -> int:
     if not int_with_suff:
         return default
     return int("".join(int_with_suff))
-
-
-def try_get_from_dict(dictionary, key_path: str, default=None):
-    key_path = key_path.split(".")
-    cur = dictionary
-    for key in key_path:
-        if key in cur:
-            cur = cur[key]
-        elif isinstance(cur, list) and len(cur) > 0 and key in cur[0]:
-            cur = cur[0][key]
-        else:
-            return default
-    return cur

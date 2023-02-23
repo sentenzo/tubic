@@ -14,7 +14,7 @@ from tubic.yt_dlp_wrap import (
 )
 from tubic.thirdparty.ffmpeg import ffmpeg
 from tubic.config import SETTINGS, save_settings
-from tubic.misc import parse_int_with_suffix, try_get_from_dict
+from tubic.misc import parse_int_with_suffix
 
 
 class InvalidYoutubeLinkFormat(ValueError):
@@ -72,23 +72,6 @@ class BaseLinkWrapper:
         self.video_url = YOUTUBE_LINK_TEMPLATE.format(video_id=self.video_id)
 
     def download(self):
-        file_name_template = "%(channel)s - %(title)s [%(id)s]"
-        codec = try_get_from_dict(self.ydl_params, "postprocessors.preferredcodec")
-        quality = try_get_from_dict(self.ydl_params, "postprocessors.preferredquality")
-
-        print(f"=================== {codec}")
-        print(f"=================== {quality}")
-        format_sort = try_get_from_dict(self.ydl_params, "format_sort")
-        if codec == "mp3":
-            file_name_template += f" ({quality})"
-        elif format_sort:
-            file_name_template += f" ({format_sort})"
-
-        # self.ydl_params["windowsfilenames"] = True
-        self.ydl_params["outtmpl"] = file_name_template
-        # {"default": file_name_template}
-        self.ydl_params["verbose"] = True
-        print(f"=================== {file_name_template}")
         with YoutubeDL(params=self.ydl_params) as ydl:
             ydl.download(self.video_id)
 
@@ -97,13 +80,11 @@ class BaseLinkWrapper:
 
 
 class LinkWrapper(BaseLinkWrapper):
-    def __init__(
-        self, *, youtube_link=None, video_id=None, ydl_params=None, cache=None
-    ) -> None:
+    def __init__(self, *, youtube_link=None, video_id=None, ydl_params=None) -> None:
         super().__init__(
             youtube_link=youtube_link, video_id=video_id, ydl_params=ydl_params
         )
-        self.cache = cache or {}
+        self.cache = {}
 
     def clear_cache(self, key=None) -> None:
         if key:
@@ -147,9 +128,7 @@ class LinkWrapper(BaseLinkWrapper):
     def _merge_ydl_params(self, add_ydl_params) -> LinkWrapper:
         ydl_params = self.ydl_params or {}
         ydl_params = ydl_params | add_ydl_params
-        return LinkWrapper(
-            video_id=self.video_id, ydl_params=ydl_params, cache=self.cache
-        )
+        return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
 
     def audio(self) -> LinkWrapper:
         """
