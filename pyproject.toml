@@ -5,11 +5,11 @@ description = "yt-dlp + pyqt6 == ♥️"
 authors = ["sentenzo <kassiyskley@rambler.ru>"]
 license = "MIT license"
 readme = "README.md"
-packages = [{include = "yt_dlp_qt6"}]
+packages = [{include = "tubic"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
-yt-dlp = "2022.9.1"
+yt-dlp = "^2023.2.17"
 PyQt6 = "6.3.1"
 
 [tool.poetry.group.dev.dependencies]
