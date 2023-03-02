@@ -86,7 +86,13 @@ class DownloadVideoWorker(Worker):
             status = msg["status"]
             if status == "downloading":
                 downloaded = msg["downloaded_bytes"]
-                total = msg["total_bytes"]
+
+                total = 2**10 * 2**10 * 2 * 10 * 100  # 100 GiB
+                if "total_bytes" in msg:
+                    total = msg["total_bytes"]
+                elif "total_bytes_estimate" in msg:
+                    total = msg["total_bytes_estimate"]
+
                 total = max(total, 1)  # ZeroDivisionError prevention (just in case)
                 percent = 100 * downloaded / total
 
