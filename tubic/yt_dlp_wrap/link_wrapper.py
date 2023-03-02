@@ -4,7 +4,7 @@ from typing import Any, Callable
 import urllib.request as ur
 import os
 
-from yt_dlp import YoutubeDL
+from yt_dlp import YoutubeDL, DownloadError
 
 from tubic.yt_dlp_wrap import (
     YOUTUBE_RE_LINK,
@@ -72,8 +72,16 @@ class BaseLinkWrapper:
         self.video_url = YOUTUBE_LINK_TEMPLATE.format(video_id=self.video_id)
 
     def download(self):
-        with YoutubeDL(params=self.ydl_params) as ydl:
-            ydl.download(self.video_id)
+        try:
+            with YoutubeDL(params=self.ydl_params) as ydl:
+                ydl.download(self.video_id)
+        except DownloadError:
+            # Sometimes when download fails with "ERROR: Did not get any
+            #  data blocks", it helps using default format preferences.
+            format_agnostic_params = self.ydl_params.copy()
+            del format_agnostic_params["format_sort"]
+            with YoutubeDL(params=format_agnostic_params) as ydl:
+                ydl.download(self.video_id)
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}(video_id={self.video_id.__repr__()})"
