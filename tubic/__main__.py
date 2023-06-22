@@ -1,3 +1,5 @@
-import tubic.app_gui as app
+from .gui_app import stuff as gui_stuff
+from .yt_wrapper import stuff as yt_stuff
 
-app.run()
+if __name__ == "__main__":
+    raise NotImplemented
