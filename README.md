@@ -72,7 +72,7 @@ The target OS is currently Windows ≥ 10. Though, there's no OS-dependent featu
 ## Building
 
 ### Software requirements
-- [**python3.10**](https://www.python.org/downloads/)
+- [**python3.11**](https://www.python.org/downloads/)
 
 - [**make**](https://en.wikipedia.org/wiki/Make_(software)) tool — for build-automation. To install it on Windows, one can try [GNU make 4.3](https://community.chocolatey.org/packages/make)  package from the [Chocolatey](https://github.com/chocolatey/choco) package manager.
 
