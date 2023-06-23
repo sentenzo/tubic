@@ -17,6 +17,10 @@ class SettingsWindow(SettingsWindowBase):
             "chb_conform_dest_folder",
         ),
         "GENERAL.import_cookies_from": (qtw.QComboBox, "cb_import_cookies_from"),
+        "GENERAL.remove_sponsored_content": (
+            qtw.QCheckBox,
+            "chb_remove_sponsored",
+        ),
         #
         "VIDEO.download_folder": (qtw.QLineEdit, "le_video_download_folder"),
         "VIDEO.max_resolution": (qtw.QComboBox, "cb_max_video_resolution"),

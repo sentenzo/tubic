@@ -5,6 +5,7 @@ default_settings = {
     "GENERAL": {
         "always_ask_to_conform_the_destination_folder": "True",
         "import_cookies_from": "nowhere",  # firefox, opera, ...
+        "remove_sponsored_content": "True",
     },
     "VIDEO": {
         "download_folder": ".",
@@ -61,6 +62,8 @@ SETTINGS = _get_config()
 
 
 def get_settings_by_path(path: str, type=str, default=None) -> str | bool | int | None:
+    if default is None and type in (str, bool, int):
+        default = type()
     path = path.split(".")
     val = SETTINGS
     for p in path[:-1]:
