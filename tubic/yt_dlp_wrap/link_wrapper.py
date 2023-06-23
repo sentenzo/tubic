@@ -135,7 +135,17 @@ class LinkWrapper(BaseLinkWrapper):
 
     def _merge_ydl_params(self, add_ydl_params) -> LinkWrapper:
         ydl_params = self.ydl_params or {}
+        old_postprocessors_params = []
+        new_postprocessors_params = []
+        if "postprocessors" in ydl_params:
+            old_postprocessors_params = ydl_params["postprocessors"]
+        if "postprocessors" in add_ydl_params:
+            new_postprocessors_params = add_ydl_params["postprocessors"]
         ydl_params = ydl_params | add_ydl_params
+        if old_postprocessors_params and new_postprocessors_params:
+            ydl_params["postprocessors"] = (
+                old_postprocessors_params + new_postprocessors_params
+            )
         return LinkWrapper(video_id=self.video_id, ydl_params=ydl_params)
 
     def audio(self) -> LinkWrapper:
@@ -197,9 +207,28 @@ class LinkWrapper(BaseLinkWrapper):
 
     def preset_general(self) -> LinkWrapper:
         cookies_from = SETTINGS["GENERAL"].get("import_cookies_from", "nowhere")
+        ret = self
         if cookies_from in ("firefox", "chrome", "edge", "opera", "vivaldi"):
-            return self._merge_ydl_params({"cookiesfrombrowser": (cookies_from,)})
-        return self
+            ret = ret._merge_ydl_params({"cookiesfrombrowser": (cookies_from,)})
+        remove_sponsored_content = SETTINGS["GENERAL"].getboolean(
+            "remove_sponsored_content", False
+        )
+        if remove_sponsored_content:
+            ret = ret._merge_ydl_params(
+                {
+                    "postprocessors": [
+                        {
+                            "key": "SponsorBlock",
+                            "categories": ["sponsor"],
+                        },
+                        {
+                            "key": "ModifyChapters",
+                            "remove_sponsor_segments": ["sponsor"],
+                        },
+                    ],
+                },
+            )
+        return ret
 
     def preset_video(self) -> LinkWrapper:
         myself = self.preset_general()
