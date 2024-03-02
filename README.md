@@ -52,10 +52,10 @@ I feel an unfulfilled demand for a very simple tool, which would:
 - -download audios as `.mp3`-files
 - -have a simple GUI (the less buttons — the better)
 - -be portable (ideally: packed in a single executable)
+- -do post-processing (`video: 1080p → 780p` or `audio: 320 kbps → 96 kbps`)
 
 The features I (subjectively) consider redundant:
 - sequential download from a list of links
-- post-processing (`video: 1080p → 780p` or `audio: 320 kbps → 96 kbps`)
 
 So that's how I've decided to make this stuff.
 
