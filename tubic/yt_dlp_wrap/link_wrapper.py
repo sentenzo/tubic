@@ -79,7 +79,8 @@ class BaseLinkWrapper:
             # Sometimes when download fails with "ERROR: Did not get any
             #  data blocks", it helps using default format preferences.
             format_agnostic_params = self.ydl_params.copy()
-            del format_agnostic_params["format_sort"]
+            if "format_sort" in format_agnostic_params:
+                del format_agnostic_params["format_sort"]
             with YoutubeDL(params=format_agnostic_params) as ydl:
                 ydl.download(self.video_id)
 
