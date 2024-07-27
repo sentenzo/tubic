@@ -9,7 +9,7 @@ packages = [{ include = "tubic" }]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-yt-dlp = "^2023.3.4"
+yt-dlp = "*"
 pyqt6 = "^6.5.1"
 
 [tool.poetry.group.dev.dependencies]
